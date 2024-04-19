@@ -1,8 +1,7 @@
 #!/bin/zsh
 
 # If the os.zsh exists in the same dir of this script, it will be sourced in the install.zsh
-path=$(realpath $0)
-dir=$(dirname $path)
+dir=$(dirname $(realpath $0))
 os_file="$dir/os.zsh"
 if [ -f "$os_file" ]; then
   source $os_file
@@ -46,5 +45,4 @@ if [ "$CURRENT_OS" = "linux" ] || [ "$CURRENT_OS" = "macos" ]; then
     if [ -f "$git_repos_file" ]; then
       source $git_repos_file
     fi
-    
 fi
