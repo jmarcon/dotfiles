@@ -56,6 +56,8 @@ declare -a pkgs=(
     "rbenv"
     "ripgrep"
     "ruby"
+    "thefuck"
+    "tldr"
     "tree"
     "wrk"
     "zoxide"
