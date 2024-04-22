@@ -1,6 +1,6 @@
 #!/bin/zsh 
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Initializing [2999] - Utils'
+    print -P '%F{yellow}  ♾️️ Initializing [2999] - Utils'
 fi
 
 # What OS is this?

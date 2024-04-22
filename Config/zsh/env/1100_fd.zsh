@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Loading Environment Variables [1100] - FD and FZF'
+    print -P '%F{yellow}  ♾️️ Loading Environment Variables [1100] - FD and FZF'
 fi
 
 export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
@@ -9,9 +9,6 @@ export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git
 
 # If bat is available, use it for previews
 if command -v bat >/dev/null 2>&1; then
-    if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Environment Variables [FD and BAT]..."
-fi
     export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 else
     export FZF_CTRL_T_OPTS="--preview 'cat {}'"
@@ -19,9 +16,6 @@ fi
 
 # If eza is available, use it for previews
 if command -v eza >/dev/null 2>&1; then
-    if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-        echo "Loading Environment Variables [FD and EZA]..."
-    fi
     export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 else 
     export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"

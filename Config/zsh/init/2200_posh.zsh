@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Initializing [2200] - Oh-My-Posh'
+    print -P '%F{yellow}  ♾️️ Initializing [2200] - Oh-My-Posh'
 fi
 
 if command -v oh-my-posh >/dev/null 2>&1; then

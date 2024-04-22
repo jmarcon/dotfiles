@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Loading Aliases [4400] - Http'
+    print -P '%F{yellow}  ♾️️ Loading Aliases [4400] - Http'
 fi
 
 if command -v curl >/dev/null 2>&1; then

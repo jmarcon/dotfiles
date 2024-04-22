@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Setting PATH [3100] - Languages & Runtimes'
+    print -P '%F{yellow}  ♾️️ Setting PATH [3100] - Languages & Runtimes'
 fi
 
 ## Dotnet

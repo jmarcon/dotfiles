@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Loading Aliases [4300] - GIT'
+    print -P '%F{yellow}  ♾️️ Loading Aliases [4300] - GIT'
 fi
 
 # GIT

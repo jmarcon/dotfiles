@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Loading Aliases [4600] - Cloud'
+    print -P '%F{yellow}  ♾️️ Loading Aliases [4600] - Cloud'
 fi
 
 if command -v docker >/dev/null 2>&1; then

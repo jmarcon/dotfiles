@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Loading Functions [5300] - Github'
+    print -P '%F{yellow}  ♾️️ Loading Functions [5300] - Github'
 fi
 
 ghcs() {

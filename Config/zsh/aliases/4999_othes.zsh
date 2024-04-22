@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow} Loading Aliases [4999] - Others'
+    print -P '%F{yellow}  ♾️️ Loading Aliases [4999] - Others'
 fi
 
 if command -v btop >/dev/null 2>&1; then
