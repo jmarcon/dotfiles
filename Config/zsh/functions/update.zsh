@@ -1,8 +1,16 @@
 #!/bin/zsh
 
+## Depends on init/tools.zsh that sets CURRENT_OS
+
 function update() {
-    sudo apt update && sudo apt upgrade
-    sudo snap refresh --list
+    if [[ "$CURRENT_OS" == "mac" ]]; then
+        
+    fi
+
+    if [[ "$CURRENT_OS" == "linux" ]]; then
+        sudo apt update && sudo apt upgrade
+        sudo snap refresh --list
+    fi
 
     local brew="brew update; brew upgrade; brew cleanup"
     sh -c $brew;
