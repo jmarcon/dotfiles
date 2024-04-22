@@ -59,6 +59,7 @@ declare -a pkgs=(
     "thefuck"
     "tldr"
     "tree"
+    "tmux"
     "wrk"
     "zoxide"
     "zsh"
@@ -92,6 +93,7 @@ if [ "$(uname)" == "Darwin" ]; then
     "transmit"
     "visual-studio-code"
     "warp"
+    "zap"
   )
 
   ## Install casks
