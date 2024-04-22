@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  echo ". Function file [5000]"
+  print -P '%F{red}=> 📁️ Loading Functions [5000]"'
 fi
 
 ## Source the aliases

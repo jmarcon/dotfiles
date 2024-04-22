@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Environment Variables [Update]..."
+    print -P '%F{yellow} Loading Functions [5100] - Update'
 fi
 
 ## Depends on init/tools.zsh that sets CURRENT_OS

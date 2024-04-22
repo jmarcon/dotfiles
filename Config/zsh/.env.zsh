@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  echo "Load All Environment file [1000]"
+  print -P '%F{red}=> 📁️ Setting Environment Variables [1000]'
 fi
 
 ## Source the aliases

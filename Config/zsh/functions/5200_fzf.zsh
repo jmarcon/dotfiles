@@ -1,7 +1,7 @@
 # If fzf is installed 
 if command -v fzf >/dev/null 2>&1; then
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Environment Variables [FZF]..."
+    print -P '%F{yellow} Loading Functions [5200] - FZF'
 fi
 fi
 

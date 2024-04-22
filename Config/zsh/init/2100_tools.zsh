@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Init [Tools]..."
+    print -P '%F{yellow} Initializing [2100] - Tools'
 fi
 
 # fzf

@@ -1,12 +1,9 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Aliases [100 - File Listing]..."
+    print -P '%F{yellow} Loading Aliases [4100] - File Listing'
 fi
 
 if command -v eza >/dev/null 2>&1; then
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Aliases [EZA]..."
-fi
 # alias ls='eza --icons=always --color=always --git-ignore --git --no-filesize --no-time --no-user --no-permissions --long'
     alias ls='eza --icons=always --color=always --git-ignore --git'
     alias ll='eza --icons=always --color=always --git-ignore --git --long --all'

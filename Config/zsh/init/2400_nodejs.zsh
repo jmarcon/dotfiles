@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Init  [NodeJS | NVM]..."
+    print -P '%F{yellow} Initializing [2400] - NodeJS | NVM'
 fi
 
 # If nvm is installed via homebrew

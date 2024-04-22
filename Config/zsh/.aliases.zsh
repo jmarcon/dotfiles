@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo ". Aliases base file [4000]"
+    print -P '%F{red}=> 📁️  Loading Aliases [4000]'
 fi
 # ## Source the aliases
 # dir=$(dirname $(realpath $0))

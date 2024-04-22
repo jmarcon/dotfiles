@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Path variable [Common]..."
+    print -P '%F{yellow} Setting PATH [3000] - Common'
 fi
 
 export PATH="$HOME/.apps:$PATH"

@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Init  [Python]..."
+    print -P '%F{yellow} Initializing [2500] - Python'
 fi
 
 if command -v pyenv >/dev/null 2>&1; then

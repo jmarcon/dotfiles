@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Environment Variables [1000 - Common]..."
+    print -P '%F{yellow} Loading Environment Variables [1000] - Common'
 fi
 # Using my birth year, just because
 export PORT=1982

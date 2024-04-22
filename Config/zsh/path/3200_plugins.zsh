@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Path variable [KREW]..."
+    print -P '%F{yellow} Setting PATH [3200] - Plugins'
 fi
 
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"

@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Environment Variables [Utils]..."
+    print -P '%F{yellow} Loading Functions [5000] - Utils'
 fi
 
 function mkd() {

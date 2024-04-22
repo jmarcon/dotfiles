@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Init [Homebrew]..."
+    print -P '%F{yellow} Initializing [2300] - Homebrew'
 fi
 
 eval "$(brew shellenv)"

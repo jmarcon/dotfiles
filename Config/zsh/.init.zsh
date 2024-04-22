@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  echo ". Init file [2000]"
+  print -P '%F{red}=> 📁️ Initializing Shell [2000]'
 fi
 
 ## Source the aliases
