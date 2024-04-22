@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Aliases [File Listing]..."
+    echo "Loading Aliases [100 - File Listing]..."
 fi
 
 if command -v eza >/dev/null 2>&1; then

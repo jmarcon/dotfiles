@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  echo ". Path file"
+  echo ". Path file [3000]"
 fi
 
 ## Source the aliases

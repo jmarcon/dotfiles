@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Aliases [GIT]..."
+    echo "Loading Aliases [300 - GIT]..."
 fi
 
 # GIT

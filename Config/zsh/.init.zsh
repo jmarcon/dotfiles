@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  echo ". Init file"
+  echo ". Init file [2000]"
 fi
 
 ## Source the aliases

@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Aliases [Folder Navigation]..."
+    echo "Loading Aliases [200 - Folder Navigation]..."
 fi
 
 # If zoxide is installed, use it

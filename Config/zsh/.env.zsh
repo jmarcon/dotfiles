@@ -1,6 +1,6 @@
 #!/bin/zsh
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  echo ". Environmenb file"
+  echo "Load All Environment file [1000]"
 fi
 
 ## Source the aliases

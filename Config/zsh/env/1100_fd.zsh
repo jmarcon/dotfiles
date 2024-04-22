@@ -1,5 +1,5 @@
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Environment Variables [FD and FZF]..."
+    echo "Loading Environment Variables [100 - FD and FZF]..."
 fi
 
 export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
