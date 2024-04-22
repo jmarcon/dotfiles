@@ -1,3 +1,8 @@
+#!/bin/zsh
+
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Path variable [Languges]..."
+fi
 
 ## Dotnet
 if [ -d "$DOTNET_ROOT" ]; then

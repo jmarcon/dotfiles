@@ -1,4 +1,7 @@
 #!/bin/zsh 
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Loading Environment Variables [00_Utils]..."
+fi
 
 function show_title() {
   local title="$1"

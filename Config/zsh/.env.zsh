@@ -1,4 +1,8 @@
 #!/bin/zsh
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+  echo ". Environmenb file"
+fi
+
 ## Source the aliases
 dir=$(dirname $(realpath $0))
 
@@ -15,5 +19,8 @@ done
 ### include sensitive information like passwords, api keys, etc
 ### consider adding it to your .gitignore 
 if [ -f ~/.dotfiles/.env.local.zsh ]; then
+  if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+      echo ". Env local file"
+  fi
   source ~/.dotfiles/.env.local.zsh
 fi

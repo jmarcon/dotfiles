@@ -1,5 +1,9 @@
 #!/bin/zsh
 
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Init [Tools]..."
+fi
+
 # What OS is this?
 # OS detection
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then

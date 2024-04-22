@@ -1,4 +1,12 @@
 #!/bin/zsh
+# Activate the debug mode
+export DEBUG_DOTFILES="false"
+
+# If the DEBUG_DOTFILES variable is set to true, then print the message
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+  echo "DEBUG_DOTFILES is enabled..."
+fi
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=10000

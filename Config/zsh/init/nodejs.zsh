@@ -1,4 +1,7 @@
 #!/bin/zsh
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Init  [NodeJS | NVM]..."
+fi
 
 # If nvm is installed via homebrew
 [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"  # This loads nvm

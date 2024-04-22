@@ -1,4 +1,7 @@
 #!/bin/zsh
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Loading Aliases [Common]..."
+fi
 
 alias c="clear"
 

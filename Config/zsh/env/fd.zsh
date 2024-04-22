@@ -1,9 +1,16 @@
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Loading Environment Variables [FD and FZF]..."
+fi
+
 export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
 
 # If bat is available, use it for previews
 if command -v bat >/dev/null 2>&1; then
+    if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Loading Environment Variables [FD and BAT]..."
+fi
     export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 else
     export FZF_CTRL_T_OPTS="--preview 'cat {}'"
@@ -11,11 +18,13 @@ fi
 
 # If eza is available, use it for previews
 if command -v eza >/dev/null 2>&1; then
+    if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+        echo "Loading Environment Variables [FD and EZA]..."
+    fi
     export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 else 
     export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 fi
-
 
 ## Setup the FZF Theme || https://vitormv.github.io/fzf-themes/
 # https://vitormv.github.io/fzf-themes#eyJib3JkZXJTdHlsZSI6ImJvbGQiLCJib3JkZXJMYWJlbCI6IiAgZnpmIHwgZmQgICIsImJvcmRlckxhYmVsUG9zaXRpb24iOjAsInByZXZpZXdCb3JkZXJTdHlsZSI6InJvdW5kZWQiLCJwYWRkaW5nIjoiMCIsIm1hcmdpbiI6IjAiLCJwcm9tcHQiOiLilrbvuI/vuI8gIiwibWFya2VyIjoiWyIsInBvaW50ZXIiOiI+Iiwic2VwYXJhdG9yIjoi44Cw77iP77iPIiwic2Nyb2xsYmFyIjoi4pWsIiwibGF5b3V0IjoicmV2ZXJzZSIsImluZm8iOiJyaWdodCIsImNvbG9ycyI6ImZnOiNGOEY4RjIsZmcrOiNCRDkzRjksYmc6IzI4MkEzNixiZys6IzQ0NDc1QSxobDojOEJFOUZELGhsKzojNTBGQTdCLGluZm86I0YxRkE4QyxtYXJrZXI6I0YxRkE4Qyxwcm9tcHQ6I0ZGNTU1NSxzcGlubmVyOiNGRjc5QzYscG9pbnRlcjojRkZCODZDLGhlYWRlcjojNjI3MkE0LGd1dHRlcjojMjgyQTM2LGJvcmRlcjojNjI3MkE0LHNlcGFyYXRvcjojRjFGQThDLHNjcm9sbGJhcjojNDQ0NzVBLHByZXZpZXctYmc6IzFlMWYyNixwcmV2aWV3LWJvcmRlcjojQkQ5M0Y5LGxhYmVsOiM2MjcyQTQscXVlcnk6I2Q5ZDlkOSxkaXNhYmxlZDojNjI3MkE0In0=

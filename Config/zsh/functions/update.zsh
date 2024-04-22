@@ -1,7 +1,9 @@
 #!/bin/zsh
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Loading Environment Variables [Update]..."
+fi
 
 ## Depends on init/tools.zsh that sets CURRENT_OS
-
 function update() {
     if [[ "$CURRENT_OS" == "mac" ]]; then
         

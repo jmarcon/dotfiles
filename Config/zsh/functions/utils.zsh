@@ -1,4 +1,7 @@
 #!/bin/zsh
+if [[ "$DEBUG_DOTFILES" == "true" ]]; then
+    echo "Loading Environment Variables [Utils]..."
+fi
 
 function mkd() {
     mkdir -p "$@" && cd "$_";
