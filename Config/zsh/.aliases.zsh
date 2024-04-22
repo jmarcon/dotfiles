@@ -8,10 +8,6 @@ fi
 
 ## Aliases
 ## Get All files in the aliases folder
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "## Loading Aliases..."
-fi
-
 for zfile in "$dir/aliases/"*.zsh;
 do
   source $zfile
