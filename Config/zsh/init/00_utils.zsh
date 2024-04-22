@@ -1,6 +1,6 @@
 #!/bin/zsh 
 if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo "Loading Environment Variables [00_Utils]..."
+    echo "Init [00_Utils]..."
 fi
 
 function show_title() {
