@@ -12,6 +12,10 @@ if command -v eza >/dev/null 2>&1; then
     alias lh='eza --icons=always --color=always --git-ignore --git --long --all -h'
     alias lg='eza --icons=always --color=always --git-ignore --git --long --all --group-directories-first'
     alias lt='eza --icons=always --color=always --git-ignore --git --tree --level=2 --group-directories-first --all'
+    alias lt1='eza --icons=always --color=always --git-ignore --git --tree --level=1 --group-directories-first --all'
+    alias lt2=lt 
+    alias lt3='eza --icons=always --color=always --git-ignore --git --tree --level=3 --group-directories-first --all'
+    alias lt4='eza --icons=always --color=always --git-ignore --git --tree --level=4 --group-directories-first --all'
     alias  l='eza --icons=always --color=always --git-ignore --git --no-filesize --no-time --no-user --no-permissions --long --tree --level=1 --group-directories-first --all'
 else
     alias ll="ls -lAh"
