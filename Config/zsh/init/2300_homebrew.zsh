@@ -3,4 +3,6 @@ if [[ "$DEBUG_DOTFILES" == "true" ]]; then
     print -P '%F{yellow}  ♾️️ Initializing [2300] - Homebrew'
 fi
 
-eval "$(brew shellenv)"
+if command -v brew >/dev/null 2>&1; then
+    eval "$(brew shellenv)"
+fi
