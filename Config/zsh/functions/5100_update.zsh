@@ -11,9 +11,13 @@ function update() {
 
     if [[ "$CURRENT_OS" == "linux" ]]; then
         sudo apt update && sudo apt upgrade
-        sudo snap refresh --list
+        if command -v snap >/dev/null 2>&1; then
+            sudo snap refresh --list
+        fi
     fi
 
-    local brew="brew update; brew upgrade; brew cleanup"
-    sh -c $brew;
+    if command -v brew >/dev/null 2>&1; then
+        local brew="brew update; brew upgrade; brew cleanup"
+        sh -c $brew;
+    fi
 }
