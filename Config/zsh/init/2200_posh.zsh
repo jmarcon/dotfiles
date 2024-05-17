@@ -5,12 +5,12 @@ fi
 
 if command -v oh-my-posh >/dev/null 2>&1; then
     if command -v brew >/dev/null 2>&1; then
-        eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/jandedobbeleer.omp.json)"
+        eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/iterm2.omp.json)"
     else
         if [ -n "${POSH_THEMES_PATH+1}" ]; then
-            eval "$(oh-my-posh init zsh --config '$POSH_THEMES_PATH/jandedobbeleer.omp.json')"
+            eval "$(oh-my-posh init zsh --config '$POSH_THEMES_PATH/iterm2.omp.json')"
         else
-            eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/jandedobbeleer.omp.json')"
+            eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/iterm2.omp.json')"
         fi
     fi
 fi 
