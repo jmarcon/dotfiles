@@ -14,6 +14,10 @@ function update() {
         if command -v snap >/dev/null 2>&1; then
             sudo snap refresh --list
         fi
+
+        if command -v flatpak >/dev/null 2>&1; then
+            flatpak update
+        fi
     fi
 
     if command -v brew >/dev/null 2>&1; then
