@@ -72,5 +72,5 @@ ln -s $dir/Config/zsh/functions ~/.dotfiles/functions
 ln -s $dir/Config/zsh/init ~/.dotfiles/init
 ln -s $dir/Config/zsh/path ~/.dotfiles/path
 
-
-
+# create a symbolic link from tmux
+ln -s $dir/Config/tmux/.tmux.conf ~/.tmux.conf
