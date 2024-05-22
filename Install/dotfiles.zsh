@@ -6,8 +6,11 @@ dir="$(dirname $(dirname $(realpath $0)))"
 
 echo $dir
 
-# create a bkp from the original file (~/.zshrc), create a new backup every time
-cp ~/.zshrc ~/.zshrc.$timestamp.bkp
+# If zshrc exists, create a backup and copy the new file
+if [ -f ~/.zshrc ]; then
+  # create a bkp from the original file (~/.zshrc), create a new backup every time
+  mv ~/.zshrc ~/.zshrc.$timestamp.bkp
+fi
 
 # copy the .zshrc file from Config/zsh directory to home folder and overwrite the original file
 echo "Copying the $dir/Config/zsh/.zshrc file to the home folder"
@@ -15,14 +18,14 @@ cp $dir/Config/zsh/.zshrc ~/.zshrc
 
 # --- 
 # create a bkp from the original folder (~/.dotfiles), create a new backup every time
-cp -r ~/.dotfiles ~/.dotfiles.$timestamp.bkp
-
-# remove the original folder
-rm -rf ~/.dotfiles
+# If a folder .dotfiles exists, create a backup and remove the original folder
+if [ -d ~/.dotfiles ]; then
+  # create a bkp from the original folder (~/.dotfiles), create a new backup every time
+  mv ~/.dotfiles ~/.dotfiles.$timestamp.bkp
+fi
 
 # create the folder again
 mkdir ~/.dotfiles
-
 
 # create a symbolic link from the Config/zsh/.aliases file to the ~/.dotfiles folder
 ln -s $dir/Config/zsh/.aliases.zsh ~/.dotfiles/.aliases.zsh
@@ -71,6 +74,12 @@ ln -s $dir/Config/zsh/env ~/.dotfiles/env
 ln -s $dir/Config/zsh/functions ~/.dotfiles/functions
 ln -s $dir/Config/zsh/init ~/.dotfiles/init
 ln -s $dir/Config/zsh/path ~/.dotfiles/path
+
+# If tmux file exists, create a backup and copy the new file
+if [ -f ~/.tmux.conf ]; then
+  # create a bkp from the original file (~/.tmux.conf), create a new backup every time
+  mv ~/.tmux.conf ~/.tmux.conf.$timestamp.bkp
+fi
 
 # create a symbolic link from tmux
 ln -s $dir/Config/tmux/.tmux.conf ~/.tmux.conf
