@@ -17,6 +17,13 @@ bindkey -e
 
 zstyle :compinstall filename '$HOME/.zshrc'
 
+# Homebrew (linux)
+# If the file brew exists, then load the shellenv
+
+if [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 ## Source Init files
 [ -f ~/.dotfiles/.env.zsh ] && source ~/.dotfiles/.env.zsh
 [ -f ~/.dotfiles/.init.zsh ] && source ~/.dotfiles/.init.zsh
