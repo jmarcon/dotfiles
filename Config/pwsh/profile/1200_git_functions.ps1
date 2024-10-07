@@ -16,6 +16,7 @@ function gitu {
     & git commit -am "$Message"
     & git push
 }
+
 function Update-GitRepository {
     param (
         [Parameter(Mandatory = $true)]
@@ -148,7 +149,6 @@ function Get-GitRepositoriesWithoutDev {
     }
 }
 
-
 function Update-AllRepositories {
     param (
         [Parameter(Mandatory = $false, Position = 0)]
@@ -190,3 +190,41 @@ function Update-AllRepositories {
         }
     }
 }
+
+function Git-GetAllBranches {
+    # Verify if the current directory is a git repository
+    if(-not (Test-Path -Path ".git")) {
+        return
+    }
+
+    $AllBranches = git branch -r
+    $AllBranches | ForEach-Object {
+        $remote = $_ -replace '\x1B\[[0-9;]*[a-zA-Z]', ''
+        if($remote -notmatch '->') {
+            $localBranch = $remote -replace 'origin/', ''
+            $localBranch = $localBranch.Trim()
+            $remote = $remote.Trim()
+            # echo "git branch --track ""$localBranch"" ""$remote"""
+            echo "Tracking Branch ${localBranch}"
+            git branch --track "${localBranch}" "${remote}"
+        }
+    }
+
+    git fetch --all
+    git pull --all
+}
+
+# function Git-SetDefaultConfig {
+#     git config --global color.ui auto
+#     git config --global fetch.prune true
+#     git config --global pull.ff only
+#     git config --global core.pager cat 
+#     git config --global editor "code --wait"
+#     git config --global grep.break true
+#     git config --global grep.heading true 
+#     git config --global grep.lineNumber true
+#     git config --global grep.extendedRegexp true
+#     git config --global log.abbrevCommit true
+#     git config --global log.follow true
+#     git config --global merge.ff false
+# }
