@@ -10,6 +10,16 @@ fi
 
 # If in linux 
 if [ "$CURRENT_OS" = "linux" ]; then
+  
+  # Update the apt cache and install some very basic packages
+  sudo apt update 
+  sudo apt-get install -y `
+    wget `
+    apt-transport-https `
+    software-properties-common
+
+
+
   # If it is an Ubuntu based distro
   if command -v apt >/dev/null 2>&1; then
     ## Add repositories
@@ -29,7 +39,12 @@ if [ "$CURRENT_OS" = "linux" ]; then
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     ### Add Kubernetes repository
-    cho 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+    ### Download the Microsoft Repository Keys
+    wget -q https://packages.microsoft.com/config/ubuntu/$VERSION_ID/packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
 
     declare -a repos=(
         "ppa:boltgolt/howdy"
@@ -47,7 +62,6 @@ if [ "$CURRENT_OS" = "linux" ]; then
     
     declare -a pkgs=(
         "aptitude"
-        "apt-transport-https"
         "aria2"
         "autorandr"
         "browsers"
@@ -103,9 +117,9 @@ if [ "$CURRENT_OS" = "linux" ]; then
         "python3-pip"
         "python3-setuptools"
         "python3-wheel"
+        "powershell"
         "rbenv"
         "solaar"
-        "software-properties-common"
         "warp-terminal"
         "wget"
         "x11-utils"
