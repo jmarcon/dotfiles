@@ -196,6 +196,9 @@ function Show-Notification {
 }
 
 function AmIAdmin() {
+    if ($IsLinux) { return $false }
+    if ($IsMacOS) { return $false }
+    
     return ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
 

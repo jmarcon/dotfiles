@@ -2,24 +2,30 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
     Write-Host 'Loading Env Variables'
 }
 
-$Env:HOME = $Env:USERPROFILE
+if(-not $Env:USERPROFILE) {
+    $ENV:USERPROFILE = $HOME
+}
 
-if ( Test-Path $ENV:USERPROFILE\.Config\env.ps1 ) {
-    . $ENV:USERPROFILE\.Config\env.ps1
+
+$ENV:HOME = $Env:USERPROFILE
+$ENV:CFG_DIR = $ENV:USERPROFILE + "\.config"
+
+if ( Test-Path $ENV:CFG_DIR\env.ps1 ) {
+    . $ENV:CFG_DIR\env.ps1
 }
 else {
     Write-Host 'env.ps1 Not Found!'
     Write-Host 'Creating env.ps1'
-    if (!(Test-Path "$ENV:USERPROFILE\.Config\")) {
-        New-Item -Path $ENV:USERPROFILE\.Config\ -ItemType Directory -Force
+    if (!(Test-Path "$ENV:CFG_DIR")) {
+        New-Item -Path $ENV:CFG_DIR -ItemType Directory -Force
         # Set the directory to be hidden
-        $dir = Get-Item $ENV:USERPROFILE\.Config\
+        $dir = Get-Item $ENV:CFG_DIR
         $dir.Attributes = 'Hidden'
     }
     
-    New-Item -Path $ENV:USERPROFILE\.Config\ -Name env.ps1 -ItemType File -Force
+    New-Item -Path $ENV:CFG_DIR -Name env.ps1 -ItemType File -Force
     Write-Host " -- "
-    Write-Host "Please add your environment variables to " + $ENV:USERPROFILE + "\.Config\env.ps1"
+    Write-Host ("Please add your environment variables to " + $ENV:CFG_DIR + "\env.ps1")
 }
 
 $ENV:DOTNET_ROOT = $Env:USERPROFILE + '\apps\dotnet\'
