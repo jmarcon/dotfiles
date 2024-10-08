@@ -17,6 +17,7 @@ $modules_to_load = @(
     "posh-docker"
     "PSWriteColor"
     "Foil"
+    "Microsoft.PowerShell.ConsoleGuiTools"
 )
 
 foreach ($module in $modules_to_load) {
