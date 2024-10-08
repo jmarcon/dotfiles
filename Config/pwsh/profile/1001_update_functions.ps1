@@ -138,8 +138,10 @@ function update {
 
     $tool = $tool.ToLower()
 
-    if (Get-Command "winfetch" -ErrorAction SilentlyContinue) {
-        winfetch
+    if ($tool -eq "all") {
+        if (Get-Command "winfetch" -ErrorAction SilentlyContinue) {
+            winfetch
+        }
     }
 
     if ($tool -eq "all" -or $tool -eq "scoop") {
