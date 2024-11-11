@@ -27,6 +27,7 @@ $pfiles = @(
     '2000_startup'
     '3000_ohmyposh'
     '4000_psreadline_profile'
+    '5000_tools'
 )
 
 foreach ($pfile in $pfiles) {
