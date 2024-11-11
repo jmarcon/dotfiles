@@ -64,6 +64,18 @@ function k-kill {
     }
 }
 
+function k-kill-ns {
+    # kubectl get namespace $namespace -o json ` | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" | kubectl replace --raw /api/v1/namespaces/stucked-namespace/finalize -f -
+    $(kubectl proxy &) | Out-Null
+    kubectl get ns | rg 'Terminating' | ForEach-Object {
+        $terminating_ns = $_.Split(" ")[0]
+        Write-Host "Force terminating Namespace: $terminating_ns"
+        $result = kubectl get ns $terminating_ns -o json |jq '.spec = {"finalizers":[]}'
+        curl -k -H "Content-Type: application/json" -X PUT --data-binary "$result" 127.0.0.1:8001/api/v1/namespaces/$terminating_ns/finalize | Out-Null
+    }
+    Get-Process -Name "kubectl" | Stop-Process
+}
+
 function kubeapps {
     $ka_token = [Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($(kubectl get --namespace default secret kubeapps-operator-token -o jsonpath='{.data.token}')))
     $ka_token | Set-Clipboard

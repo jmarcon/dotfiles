@@ -5,6 +5,7 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
 }
 
 function gs { git status }
+function gla { git log --oneline --all --graph --decorate }
 
 function gitu {
     Param(
