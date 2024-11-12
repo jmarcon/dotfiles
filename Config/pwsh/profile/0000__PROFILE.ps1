@@ -39,6 +39,14 @@ $pfiles = @(
 # Loop through each profile file and load it if it exists
 foreach ($pfile in $pfiles) {
     $ipf = Open-Profile-File $pfile
+
+    if (-not ($PSVersionTable.PSVersion.Major -ge 7)) {
+        # Skip github integration for older versions of powershell
+        if ($pfile -eq '1500_github_integration') {
+            continue
+        }
+    }
+
     if (Test-Path ($ipf)) {
         . $ipf
     }

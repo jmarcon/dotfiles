@@ -21,7 +21,11 @@ if (Get-Command "winfetch" -ErrorAction SilentlyContinue) {
 if (Get-Command "bat" -ErrorAction SilentlyContinue) {
     # Set-Alias cat "bat" -Option AllScope
     # Alias doesn't work with arguments
-    Remove-Alias -Name cat -Force -ErrorAction SilentlyContinue
+    # Identify powershell version 
+    if ($PSVersionTable.PSVersion.Major -ge 7) {
+        Remove-Alias -Name cat -Force -ErrorAction SilentlyContinue
+    }
+    
     function cat {
         bat  -P --theme Dracula --style plain $args
     }
@@ -38,9 +42,11 @@ if (Get-Command "python3" -ErrorAction SilentlyContinue) {
 }
 
 if (Get-Command "eza" -ErrorAction SilentlyContinue) {
-    Remove-Alias -Name ls -Force -ErrorAction SilentlyContinue
-    Remove-Alias -Name la -Force -ErrorAction SilentlyContinue
-    Remove-Alias -Name ll -Force -ErrorAction SilentlyContinue
+    if ($PSVersionTable.PSVersion.Major -ge 7) {
+        Remove-Alias -Name ls -Force -ErrorAction SilentlyContinue
+        Remove-Alias -Name la -Force -ErrorAction SilentlyContinue
+        Remove-Alias -Name ll -Force -ErrorAction SilentlyContinue
+    }
 
     $ic = @("--icons=always", "--color=always", "--no-time")
     $la = @("--long", "--all")

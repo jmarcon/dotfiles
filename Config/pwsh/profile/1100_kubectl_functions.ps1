@@ -66,7 +66,7 @@ function k-kill {
 
 function k-kill-ns {
     # kubectl get namespace $namespace -o json ` | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" | kubectl replace --raw /api/v1/namespaces/stucked-namespace/finalize -f -
-    $(kubectl proxy &) | Out-Null
+    Start-Job -ScriptBlock { kubectl proxy }
     kubectl get ns | rg 'Terminating' | ForEach-Object {
         $terminating_ns = $_.Split(" ")[0]
         Write-Host "Force terminating Namespace: $terminating_ns"
