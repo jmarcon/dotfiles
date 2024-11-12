@@ -42,3 +42,21 @@ if(Get-Command "dotnet" -ErrorAction SilentlyContinue) {
         }
     }
 }
+
+if(Get-Command "docker" -ErrorAction SilentlyContinue) {
+    function hollywood {
+        docker run --rm -it bcbcarl/hollywood
+    }
+
+    function caniuse {
+        docker run -t --rm difro/caniuse-cmd $args
+    }
+
+    function lint-dockerfile {
+        param (
+            [Parameter(Mandatory = $false, Position = 0)]
+            [string]$DockerFilePath = (Get-Location).Path + "\Dockerfile"
+        )
+        cat $DockerFilePath | docker run --rm -i hadolint/hadolint:latest-alpine
+    }
+}
