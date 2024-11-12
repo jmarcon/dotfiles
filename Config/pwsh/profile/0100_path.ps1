@@ -1,5 +1,5 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading Path'
+if ($ENV:PROFILE_DEBUG -eq $true) { 
+    Write-Host 'Loading Path' 
 }
 
 function Add-Path {
@@ -8,7 +8,10 @@ function Add-Path {
         [string]$Path
     )
 
-    $ENV:PATH += ';' + $Path
+    if ($ENV:PATH -notlike '*;') {
+        $ENV:PATH += ';'
+    }
+    $ENV:PATH += $Path
 }
 
 function Add-Path-UserProfile {
@@ -17,27 +20,25 @@ function Add-Path-UserProfile {
         [string]$Path
     )
 
-    $ENV:PATH += ';' + $Env:USERPROFILE + $Path
+    if ($ENV:PATH -notlike '*;') {
+        $ENV:PATH += ';'
+    }
+    $ENV:PATH += $Env:USERPROFILE + $Path
 }
-
-# Scoop
-Add-Path-UserProfile "\scoop\shims"
 Add-Path-UserProfile "\scoop\apps\nvm\current"
 Add-Path-UserProfile "\scoop\apps\nvm\current\nodejs\nodejs"
 Add-Path-UserProfile "\scoop\apps\oh-my-posh\current"
 Add-Path-UserProfile "\scoop\apps\vscode\current\bin"
 
-
+# User scripts and tools
 Add-Path-UserProfile "\.scripts"
 Add-Path-UserProfile "\.krew\bin"
 Add-Path-UserProfile "\.dotnet\tools"
 
-
-
-# AppData
+# AppData paths
 Add-Path-UserProfile "\AppData\local\multipass\bin"
 
-# Dotnet
-Add-Path $ENV:DOTNET_ROOT
-
-
+# Dotnet path
+if ($ENV:DOTNET_ROOT -ne $null -and $ENV:DOTNET_ROOT -ne '') {
+    Add-Path $ENV:DOTNET_ROOT
+}
