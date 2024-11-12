@@ -46,42 +46,18 @@ if (Get-Command "eza" -ErrorAction SilentlyContinue) {
     $la = @("--long", "--all")
     $tr = @("--tree", "--group-directories-first", "--all")
 
-    function ls {
-        eza $ic $args
-    }
-    function la {
-        eza $ic --all $args
-    }
-    function ll {
-        eza $ic $la $args
-    }
-    function lc {
-        eza $ic --long $args
-    }
-    function lh {
-        eza $ic $la -h $args
-    }
-    function lg {
-        eza $ic $la --group-directories-first $args
-    }
-    function lt {
-        eza $ic $tr --level=2 $args
-    }
-    function lt1 {
-        eza $ic $tr --level=1 $args
-    }
-    function lt2 {
-        eza $ic $tr --level=2 $args
-    }
-    function lt3 {
-        eza $ic $tr --level=3 $args
-    }
-    function lt4 {
-        eza $ic $tr --level=4 $args
-    }
-    function l {
-        eza $ic --no-filesize --no-time --no-user --no-permissions --long $tr --level=1 $args
-    }
+    function ls { eza $ic $args }
+    function la { eza $ic --all $args }
+    function ll { eza $ic $la $args }
+    function lc { eza $ic --long $args }
+    function lh { eza $ic $la -h $args }
+    function lg { eza $ic $la --group-directories-first $args }
+    function lt { eza $ic $tr --level=2 $args }
+    function lt1 { eza $ic $tr --level=1 $args }
+    function lt2 { eza $ic $tr --level=2 $args }
+    function lt3 { eza $ic $tr --level=3 $args }
+    function lt4 { eza $ic $tr --level=4 $args }
+    function l { eza $ic --no-filesize --no-time --no-user --no-permissions --long $tr --level=1 $args }
 }
 else {
     function ll {
