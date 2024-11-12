@@ -118,7 +118,6 @@ function env {
 
 
 ### Write Host Functions
-
 function CenterText {
     param($Message)
     return ("{0}{1}" -f (' ' * (([Math]::Max(0, $Host.UI.RawUI.BufferSize.Width / 2) - [Math]::Floor($Message.Length / 2)))), $Message)
@@ -156,11 +155,13 @@ function Show-Notification {
         $ToastTitle,
         [string]
         [parameter(ValueFromPipeline)]
-        $ToastText
+        $ToastText,
+        [string]
+        $IconPath = "C:/Users/julia/OneDrive - Sol Agora/Imagens/Icones/ultron.jpg"
     )
 
     if (Get-Module -ListAvailable -Name BurntToast) {
-        $icon_path = "C:/Users/julia/OneDrive - Sol Agora/Imagens/Icones/ultron.jpg"
+        $icon_path = $PSCmdlet.MyInvocation.BoundParameters['IconPath'] -or "C:/Users/julia/OneDrive - Sol Agora/Imagens/Icones/ultron.jpg"
         if (Test-Path $icon_path) {
             New-BurntToastNotification -AppLogo $icon_path -Text $ToastTitle, $ToastText
         }
