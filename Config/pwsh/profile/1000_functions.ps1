@@ -75,14 +75,18 @@ if (!(Get-Command "zoxide" -ErrorAction SilentlyContinue)) {
         }
     }
     Set-Alias -Name cd -Value z -Option AllScope
+
+    function back { z -Path - }
+    function .. { z .. }
+    function ... { z ..\.. }
+    function .... { z ..\..\.. }
+    function ..... { z ..\..\..\.. }
+} else {
+    function .. { cd .. }
+    function ... { cd ..\.. }
+    function .... { cd ..\..\.. }
+    function ..... { cd ..\..\..\.. }
 }
-
-
-function back { z -Path - }
-function .. { z .. }
-function ... { z ..\.. }
-function .... { z ..\..\.. }
-function ..... { z ..\..\..\.. }
 
 
 ### Program Tools Specific Functions
