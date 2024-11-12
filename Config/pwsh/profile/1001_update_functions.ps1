@@ -133,6 +133,7 @@ function update-choco {
 function update {
     Param(
         [Parameter(Mandatory = $false, Position = 0)]
+        [ValidateSet("all", "scoop", "choco", "npm", "dotnet", "python", "winget", "windows")]
         [string]$tool = "all"
     )
 
