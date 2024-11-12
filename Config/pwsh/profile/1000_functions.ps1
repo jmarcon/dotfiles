@@ -103,32 +103,6 @@ if (Get-Command "dotnet" -ErrorAction SilentlyContinue) {
 }
 
 
-### List Files Functions
-if (Get-Command "eza" -ErrorAction SilentlyContinue) {
-    Remove-Alias -Name ls -Force -ErrorAction SilentlyContinue
-    Remove-Alias -Name la -Force -ErrorAction SilentlyContinue
-    Remove-Alias -Name ll -Force -ErrorAction SilentlyContinue
-
-    function ls {
-        eza --no-time $args
-    }
-    function la {
-        eza --all --no-time $args
-    }
-    function ll {
-        eza --long --all --no-time $args
-    }
-}
-else {
-    function ll {
-        Get-ChildItem | Format-Table Mode, @{N = 'Owner'; E = { (Get-Acl $_.FullName).Owner } }, Length, LastWriteTime, @{N = 'Name'; E = { if ($_.Target) { $_.Name + ' -> ' + $_.Target } else { $_.Name } } }
-    }
-
-    function la {
-        Get-ChildItem -Force @args 
-    }
-}
-
 ### Print Functions
 function path {
     $Env:PATH -split ";"

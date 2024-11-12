@@ -56,6 +56,18 @@ function update-winget {
     & winget upgrade --all --rainbow -s winget
 }
 
+if (Get-Command "scoop" -ErrorAction SilentlyContinue) {
+    function Refresh-Scoop-Buckets {
+        Param(
+            [Parameter(Mandatory = $true, Position = 0)]
+            [string]$scoop_bucket
+        )
+
+        scoop bucket rm $scoop_bucket
+        scoop bucket add $scoop_bucket
+    }
+}
+
 
 function update-scoop {
     if (!(Get-Command "scoop" -ErrorAction SilentlyContinue)) { 
