@@ -61,36 +61,36 @@ function Git-PullAllDev {
         if ($null -ne $development) {
             Write-Color "Found ", "development ", "branch - Pulling" -Color Cyan, Blue, Cyan
             git checkout development
-            git pull
+            git pull --all
         }
 
         elseif ($null -ne $develop) {
             Write-Color "Found ", "develop ", "branch - Pulling" -Color Cyan, Blue, Cyan
             git checkout develop
-            git pull
+            git pull --all
         }
         elseif ($null -ne $dev) {
             Write-Color "Found ", "dev ", "branch - Pulling" -Color Cyan, Blue, Cyan
             git checkout dev
-            git pull
+            git pull --all
         }
         elseif ($null -ne $main_branch) {
             Write-Color "Not Found ", "development/develop/dev " -Color Cyan, Red
             Write-Color "Found ", "main ", "branch - Pulling" -Color Cyan, Red, Cyan
             git checkout main
-            git pull
+            git pull --all
         }
         elseif ($null -ne $master_branch) {
             Write-Color "Not Found ", "development/develop/dev " -Color Cyan, Red
             Write-Color "Found ", "master ", "branch - Pulling" -Color Cyan, Red, Cyan
             git checkout master
-            git pull
+            git pull --all
         }
         else {
             Write-Color "Not Found ", "development/develop/dev " -Color Cyan, Red
             Write-Color "Not FOund ", "Main/Master branch found" -Color Cyan, Red
             Write-Color "We are in ", "$($current_git_branch)" -Color Cyan, Yellow
-            git pull
+            git pull --all
         }
     }
 }
