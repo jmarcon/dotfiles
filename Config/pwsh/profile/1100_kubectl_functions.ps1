@@ -54,6 +54,15 @@ function k-ctx {
     }
 }
 
+function kctx {
+    Param(
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string]$context
+    )
+
+    k-ctx $context
+}
+
 function k-kill { 
     ## for p in $(kubectl get pods | grep Terminating | awk '{print $1}'); do kubectl delete pod $p --grace-period=0 --force;done
     kubectl get pods | ForEach-Object {
