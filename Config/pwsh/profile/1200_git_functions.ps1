@@ -18,6 +18,83 @@ function gitu {
     & git push
 }
 
+function Git-PullAll {
+    param (
+        [Parameter(Mandatory = $false, Position = 0)]
+        [string]$ParentFolder = (Get-Location).Path,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [bool]$Recursive = $true
+    )
+
+    $repos = Get-AllGitRepositories -ParentFolder $ParentFolder -Recursive $Recursive -Print $false
+    $repos | ForEach-Object {
+        Set-Location $_
+        Write-Title "Git Repository: $_"
+        # Pull the current branch
+        & git pull --all
+    }
+}
+
+function Git-PullAllDev {
+    param (
+        [Parameter(Mandatory = $false, Position = 0)]
+        [string]$ParentFolder = (Get-Location).Path,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [bool]$Recursive = $true
+    )
+
+    $repos = Get-AllGitRepositories -ParentFolder $ParentFolder -Recursive $Recursive -Print $false
+    $repos | ForEach-Object {
+        Set-Location $_
+        Write-Title "Git Repository: $_"
+
+        $current_git_branch = & git branch | Select-String -Pattern "\*"
+        $development = git branch -a | Select-String -Pattern "development" -Quiet
+        $develop = git branch -a | Select-String -Pattern "develop" -Quiet
+        $dev = git branch -a | Select-String -Pattern "dev" -Quiet
+
+        $main_branch = $(git remote show origin | rg 'HEAD branch') | Select-String -Pattern "main" -Quiet
+        $master_branch = $(git remote show origin | rg 'HEAD branch') | Select-String -Pattern "master" -Quiet
+
+        if ($null -ne $development) {
+            Write-Color "Found ", "development ", "branch - Pulling" -Color Cyan, Blue, Cyan
+            git checkout development
+            git pull
+        }
+
+        elseif ($null -ne $develop) {
+            Write-Color "Found ", "develop ", "branch - Pulling" -Color Cyan, Blue, Cyan
+            git checkout develop
+            git pull
+        }
+        elseif ($null -ne $dev) {
+            Write-Color "Found ", "dev ", "branch - Pulling" -Color Cyan, Blue, Cyan
+            git checkout dev
+            git pull
+        }
+        elseif ($null -ne $main_branch) {
+            Write-Color "Not Found ", "development/develop/dev " -Color Cyan, Red
+            Write-Color "Found ", "main ", "branch - Pulling" -Color Cyan, Red, Cyan
+            git checkout main
+            git pull
+        }
+        elseif ($null -ne $master_branch) {
+            Write-Color "Not Found ", "development/develop/dev " -Color Cyan, Red
+            Write-Color "Found ", "master ", "branch - Pulling" -Color Cyan, Red, Cyan
+            git checkout master
+            git pull
+        }
+        else {
+            Write-Color "Not Found ", "development/develop/dev " -Color Cyan, Red
+            Write-Color "Not FOund ", "Main/Master branch found" -Color Cyan, Red
+            Write-Color "We are in ", "$($current_git_branch)" -Color Cyan, Yellow
+            git pull
+        }
+    }
+}
+
 function Update-GitRepository {
     param (
         [Parameter(Mandatory = $true)]
@@ -97,28 +174,38 @@ function Get-AllGitRepositories {
         [string]$ParentFolder = (Get-Location).Path,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [bool]$Recursive = $true
+        [bool]$Recursive = $true,
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [bool]$Print = $true
     )
 
+    # Define the $repo array
+    $repos = @()
+
     if ($Recursive) {
-        Write-Title "Git Repositories in 🗂️ $($ParentFolder) | Recursive"
+        if ($Print) { Write-Title "Git Repositories in 🗂️ $($ParentFolder) | Recursive" }
         # Get all git repositories in the current folder and subfolders 
         $gitrepos = Get-ChildItem $ParentFolder -Directory -Recurse -Force ".git"
         $gitrepos | ForEach-Object {
             ## Remove the .git folder from the path
             $repo = $_.FullName.Replace(".git", "")
-            Write-Host "👨‍💻 Repository: $($repo)"
+            if ($Print) { Write-Host "👨‍💻 Repository: $($repo)" }
+            $repos += $repo
         }
     }
     else {
-        Write-Title "Git Repositories in 🗂️ $($ParentFolder)"
+        if ($Print) { Write-Title "Git Repositories in 🗂️ $($ParentFolder)" }
         $gitrepos = Get-ChildItem $ParentFolder -Directory -Recurse -Force ".git"
         $gitrepos | ForEach-Object {
             ## Remove the .git folder from the path
             $repo = $_.FullName.Replace(".git", "")
-            Write-Host "👨‍💻 Repository: $($repo)"
+            if ($Print) { Write-Host "👨‍💻 Repository: $($repo)" }
+            $repos += $repo
         }
     }
+
+    return $repos
 }
 
 function Get-GitRepositoriesWithoutDev {
