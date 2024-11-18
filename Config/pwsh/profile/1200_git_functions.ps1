@@ -27,7 +27,7 @@ function Git-PullAll {
         [bool]$Recursive = $true
     )
 
-    $repos = Get-AllGitRepositories -ParentFolder $ParentFolder -Recursive $Recursive -Print $false
+    $repos = Git-GetAllRepositories -ParentFolder $ParentFolder -Recursive $Recursive -Print $false
     $repos | ForEach-Object {
         Set-Location $_
         Write-Title "Git Repository: $_"
@@ -45,7 +45,7 @@ function Git-PullAllDev {
         [bool]$Recursive = $true
     )
 
-    $repos = Get-AllGitRepositories -ParentFolder $ParentFolder -Recursive $Recursive -Print $false
+    $repos = Git-GetAllRepositories -ParentFolder $ParentFolder -Recursive $Recursive -Print $false
     $repos | ForEach-Object {
         Set-Location $_
         Write-Title "Git Repository: $_"
@@ -95,7 +95,7 @@ function Git-PullAllDev {
     }
 }
 
-function Update-GitRepository {
+function Git-UpdateRepository {
     param (
         [Parameter(Mandatory = $true)]
         [string]$RepositoryPath,
@@ -168,7 +168,7 @@ function Update-GitRepository {
     return $has_main
 }
 
-function Get-AllGitRepositories {
+function Git-GetAllRepositories {
     param (
         [Parameter(Mandatory = $false, Position = 0)]
         [string]$ParentFolder = (Get-Location).Path,
@@ -208,7 +208,7 @@ function Get-AllGitRepositories {
     return $repos
 }
 
-function Get-GitRepositoriesWithoutDev {
+function Git-GetRepositoriesWithoutDev {
     param (
         [Parameter(Mandatory = $false, Position = 0)]
         [string]$ParentFolder = (Get-Location).Path
@@ -237,7 +237,7 @@ function Get-GitRepositoriesWithoutDev {
     }
 }
 
-function Update-AllRepositories {
+function Git-UpdateAllRepositories {
     param (
         [Parameter(Mandatory = $false, Position = 0)]
         [string]$ParentFolder = (Get-Location).Path,
@@ -253,7 +253,7 @@ function Update-AllRepositories {
             $repo = $_.FullName.Replace(".git", "")
             $tot++
             
-            $has_main = Update-GitRepository -RepositoryPath $repo -ParentFolder $ParentFolder
+            $has_main = Git-UpdateRepository -RepositoryPath $repo -ParentFolder $ParentFolder
             if ($has_main) { $count++ }
         }
 
@@ -272,7 +272,7 @@ function Update-AllRepositories {
         Get-ChildItem $ParentFolder -Directory | ForEach-Object {
             $repo = $_.FullName + "\.git"
             if (Test-Path $repo) {
-                $has_main = Update-GitRepository -RepositoryPath $_.FullName -ParentFolder $ParentFolder
+                $has_main = Git-UpdateRepository -RepositoryPath $_.FullName -ParentFolder $ParentFolder
                 if ($has_main) { $count++ }
             }
         }
