@@ -37,5 +37,6 @@ if (Test-Path -Path (Join-Path -Path $ENV:CFG_DIR -ChildPath "env.ps1")) {
 
 # Set DOTNET_ROOT, NVM_HOME, and NVM_SYMLINK environment variables
 $ENV:DOTNET_ROOT = Join-Path -Path $Env:USERPROFILE -ChildPath "apps\dotnet"
+$DOTNET_ROOT = Join-Path -Path $Env:USERPROFILE -ChildPath "apps\dotnet"
 $ENV:NVM_HOME = Join-Path -Path $Env:USERPROFILE -ChildPath "scoop\apps\nvm\current"
 $ENV:NVM_SYMLINK = Join-Path -Path $Env:USERPROFILE -ChildPath "scoop\persist\nvm\nodejs\nodejs"
