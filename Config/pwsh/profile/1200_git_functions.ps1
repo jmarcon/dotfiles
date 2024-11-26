@@ -4,6 +4,7 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
     Write-Host 'Loading Git Functions'
 }
 
+
 function gs { git status }
 function gla { git log --oneline --all --graph --decorate }
 
@@ -17,6 +18,35 @@ function gitu {
     & git commit -am "$Message"
     & git push
 }
+
+# Git-Flow Functions
+function gf-init {
+    git flow init -d
+}
+
+function gff {
+    git flow feature $args
+}
+
+function gff-start {
+    git flow feature start $args
+}
+
+function gff-finish {
+    git flow feature finish $args
+}
+
+function gff-publish {
+    git flow feature publish $args
+}
+
+function gff-track {
+    git flow feature track $args
+}
+
+
+
+
 
 function Git-PullAll {
     param (
