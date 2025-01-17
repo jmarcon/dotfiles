@@ -141,11 +141,26 @@ function update-choco {
     }
 }
 
+function update-vscode {
+    if (!(Get-Command "scoop" -ErrorAction SilentlyContinue)) { 
+        Write-Err "scoop not installed"
+        return
+    }
+
+    Write-Title "Force Updating Visual Studio Code"
+    Write-Host "Killing code instances and code-tunnel"
+    Get-Process -Name "code-*","Code*" | kill 
+    Write-Host "Updating vscode from Scoop"
+    scoop update vscode
+    Write-Host "Installing code tunnel again"
+    code tunnel service install
+}
+
 
 function update {
     Param(
         [Parameter(Mandatory = $false, Position = 0)]
-        [ValidateSet("all", "scoop", "choco", "npm", "dotnet", "python", "winget", "windows")]
+        [ValidateSet("all", "scoop", "choco", "npm", "dotnet", "python", "winget", "windows", "code")]
         [string]$tool = "all"
     )
 
@@ -183,5 +198,9 @@ function update {
 
     if ($tool -eq "all" -or $tool -eq "windows") {
         update-windows
+    }
+
+    if ($tool -eq "code") {
+        update-vscode
     }
 }
