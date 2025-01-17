@@ -134,9 +134,9 @@ function k8s {
         }
 
         if (-not $server_is_running) {
-            Write-Color "Docker", "	is not running" -Color Yellow, Red
+            Write-Color "Docker or Podman", "	are not running" -Color Yellow, Red
             Write-Host "----------------------------------------"
-            Write-Color "Your K8s cluster is not healthy  😢" -Color Red
+            Write-Color "Your K8s cluster is not healthy" -Color Red
             return
         }
 
@@ -182,10 +182,10 @@ function k8s {
 
         if ($k8s_pods_healthy) {
             Write-Host "----------------------------------------"
-            Write-Color "Your K8s cluster looks healthy 😎" -Color Green
+            Write-Color "Your K8s cluster looks healthy" -Color Green
         }
         else {
-            Write-Color "Your K8s cluster is not healthy 😢" -Color Red
+            Write-Color "Your K8s cluster is not healthy" -Color Red
         }
     }
 

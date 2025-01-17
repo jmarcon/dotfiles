@@ -5,8 +5,13 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
 if (AmIAdmin) {
     $txt = " "
     Write-Host $txt -ForegroundColor white
-    $txt = CenterText "😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱"
-    Write-Host $txt -ForegroundColor red
+
+    if ($PSVersionTable.PSVersion.Major -gt 6) {
+        $txt = CenterText "😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱"
+    }else{
+        $txt = CenterText "#########################################"
+    }
+    Write-Host $txt -ForegroundColor yellow
     Write-Host " " -ForegroundColor white
     $txt = CenterText "You are running your terminal as"
     Write-Host $txt -ForegroundColor darkmagenta
@@ -16,8 +21,12 @@ if (AmIAdmin) {
     $txt = CenterText "with Administrator access"
     Write-Host $txt -ForegroundColor red
     Write-Host " "
-    $txt = CenterText "😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱"
-    Write-Host $txt
+    if ($PSVersionTable.PSVersion.Major -gt 6) {
+        $txt = CenterText "😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱 😱"
+    }else {
+        $txt = CenterText "#########################################"
+    }
+    Write-Host $txt -ForegroundColor yellow
     Write-Host " "
 }
 else {

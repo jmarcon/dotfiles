@@ -214,7 +214,7 @@ function Git-GetAllRepositories {
     $repos = @()
 
     if ($Recursive) {
-        if ($Print) { Write-Title "Git Repositories in 🗂️ $($ParentFolder) | Recursive" }
+        if ($Print) { Write-Title "Git Repositories in folder $($ParentFolder) | Recursive" }
         # Get all git repositories in the current folder and subfolders 
         $gitrepos = Get-ChildItem $ParentFolder -Directory -Recurse -Force ".git"
         $gitrepos | ForEach-Object {
@@ -225,7 +225,7 @@ function Git-GetAllRepositories {
         }
     }
     else {
-        if ($Print) { Write-Title "Git Repositories in 🗂️ $($ParentFolder)" }
+        if ($Print) { Write-Title "Git Repositories in folder $($ParentFolder)" }
         $gitrepos = Get-ChildItem $ParentFolder -Directory -Recurse -Force ".git"
         $gitrepos | ForEach-Object {
             ## Remove the .git folder from the path

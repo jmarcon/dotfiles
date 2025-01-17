@@ -203,7 +203,7 @@ function work {
         [Parameter(Mandatory = $false, Position = 0)]
         [string]$job
     )
-    Write-Title "Work time! 💪🍅 $job"
+    Write-Title "Work time! $job"
     $totalMinutes = 50
     $totalSeconds = $totalMinutes * 60
     $totalMilliseconds = $totalSeconds * 1000
@@ -222,7 +222,7 @@ function work {
         Write-Host $completed "waited" $waited
         Start-Sleep -Milliseconds $waitMilliseconds
     }
-    Show-Notification "Time's up" "Work Timer is up! Take a Break 😊"
+    Show-Notification "Time's up" "Work Timer is up! Take a Break"
 }
 
 function rest {
@@ -249,7 +249,7 @@ function rest {
         Start-Sleep -Milliseconds $waitMilliseconds
     }
 
-    Show-Notification "Break is Over" "Break is over! Get back to work 😬" 
+    Show-Notification "Break is Over" "Break is over! Get back to work" 
 }
 
 function mkd {
