@@ -155,28 +155,28 @@ function k8s {
 
             if ($pod_status -ieq "running") {
                 $k8s_pods_healthy = $true
-                Write-Color "📦 Pod: ", $pod_name , " | Status: " , $pod_status , " | " , $k8s_pods_healthy -Color White, Yellow, White, Green, Black, Black
-                # Write-Title "📦 Pod: ", $pod_name, " ", $pod_status
+                Write-Color "Pod : ", $pod_name , " | Status: " , $pod_status , " | " , $k8s_pods_healthy -Color White, Yellow, White, Green, Black, Black
+                # Write-Title "Pod : ", $pod_name, " ", $pod_status
             }
             elseif ($pod_status -ieq "exited") {
                 $k8s_pods_healthy = $false
-                Write-Color "📦 Pod: ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Yellow, White, Red, Black, Black
-                # Write-Title "📦 Pod: ", $pod_name, " ", $pod_status
+                Write-Color "Pod : ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Yellow, White, Red, Black, Black
+                # Write-Title "Pod : ", $pod_name, " ", $pod_status
             }
             elseif ($pod_status -ieq "created") {
                 $k8s_pods_healthy = $false
-                Write-Color "📦 Pod: ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Yellow, White, Yellow, Black, Black
-                # Write-Title "📦 Pod: ", $pod_name, " ", $pod_status
+                Write-Color "Pod : ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Yellow, White, Yellow, Black, Black
+                # Write-Title "Pod : ", $pod_name, " ", $pod_status
             }
             elseif ($pod_status -ieq "paused") {
                 $k8s_pods_healthy = $false
-                Write-Color "📦 Pod: ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Yellow, White, Yellow, Black, Black
-                # Write-Title "📦 Pod: ", $pod_name, " ", $pod_status
+                Write-Color "Pod : ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Yellow, White, Yellow, Black, Black
+                # Write-Title "Pod : ", $pod_name, " ", $pod_status
             }
             else {
                 $k8s_pods_healthy = $false
-                Write-Color "📦 Pod: ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Red, White, Red, Black, Black
-                # Write-Title "📦 Pod: ", $pod_name, " ", $pod_status
+                Write-Color "Pod : ", $pod_name, " | Status: ", $pod_status, " | ", $k8s_pods_healthy -Color White, Red, White, Red, Black, Black
+                # Write-Title "Pod : ", $pod_name, " ", $pod_status
             }
         }
 
@@ -211,7 +211,7 @@ function k8s {
             
             foreach ($p in $pods) {
                 $formatted_pod_name = $p.Trim().PadRight(20)
-                Write-Color "📦 Pod: ", $formatted_pod_name, " | Status", " starting..." -Color White, Yellow, White, Green
+                Write-Color "Pod : ", $formatted_pod_name, " | Status", " starting..." -Color White, Yellow, White, Green
                 docker start $p | Out-Null
                 
             }
