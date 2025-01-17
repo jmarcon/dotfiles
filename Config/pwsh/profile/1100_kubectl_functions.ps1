@@ -4,7 +4,7 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
     Write-Host 'Loading Kubectl Functions'
 }
 
-function k { 
+function k {
     kubectl $args 
 }
 
@@ -129,8 +129,13 @@ function k8s {
             $server_is_running = $true
         }
 
-        if (Get-Process "Podman Desktop" -ErrorAction SilentlyContinue) {
-            $server_is_running = $true
+        if(-not ($server_is_running)) {
+            # Docker not running, Trying Podman
+            $podman_status = podman machine inspect | jq ".[0].State"
+            $podman_status = $podman_status.Trim('"')
+            if($podman_status -eq "running") {
+                $server_is_running = $true
+            }
         }
 
         if (-not $server_is_running) {
@@ -142,7 +147,9 @@ function k8s {
 
         ## Local variable         
         $k8s_pods_healthy = $true
-        $pods = docker ps -a | rg "kind-" | ForEach-Object { 
+        
+        $pods = docker ps --format '{{.Names}}' -a --filter "name=kind" | ForEach-Object {
+        # $pods = docker ps -a | rg "kind-" | ForEach-Object { 
             $pod_name = $_.Split(" ")[-1] 
             $pod_name_clean = $pod_name.Trim()
             # Format pod name with fixed length
@@ -191,14 +198,39 @@ function k8s {
 
     if ($action -ieq "start" -or $action -ieq "up") {
         ## Verify if Docker Desktop is running
-        if (-not (Get-Process -Name "Docker Desktop" -ErrorAction SilentlyContinue)) {
-            Write-Title "Starting Docker Desktop"
-            Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
-            Start-Sleep -s 10
+        $docker_running = $false
+        $podman_running = $false
+        if (Get-Process -Name "[Dd]ocker*" -ErrorAction SilentlyContinue) {
+            $docker_running = $true
+        }
+        else{
+            $podman_status = podman machine inspect | jq ".[0].State"
+            $podman_status = $podman_status.Trim('"')
+            if($podman_status -eq "running") {
+                $podman_running = $true
+            }
+        }
+
+        if(-not ($docker_running -or $podman_running)) {
+            Write-Title "Docker or Podman not running. Trying to start"
+
+            if(Test-Path -Path "C:\Program Files\Docker\Docker\Docker Desktop.exe") {
+                Write-Title "Starting Docker Desktop"
+                Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+                Start-Sleep -s 10
+            }
+            elseif(Get-Command "podman" -ErrorAction SilentlyContinue) {
+                podman machine start
+            }
+            else{
+                Write-Err "Docker nor Podman installed"
+                return
+            }            
         }
 
         # List of Pods
-        $pods = docker ps -a | rg "kind" | ForEach-Object { $_.Split(" ")[-1] }
+        # $pods = docker ps -a | rg "kind" | ForEach-Object { $_.Split(" ")[-1] }
+        $pods = docker ps --format '{{.Names}}' -a --filter "name=kind"
         if ($null -eq $pods) {
             Write-Title "No pods found | Need to create Kind Cluster (default)"
             kind create cluster
@@ -210,6 +242,7 @@ function k8s {
             $pods = $pods | Sort-Object
             
             foreach ($p in $pods) {
+
                 $formatted_pod_name = $p.Trim().PadRight(20)
                 Write-Color "Pod : ", $formatted_pod_name, " | Status", " starting..." -Color White, Yellow, White, Green
                 docker start $p | Out-Null
@@ -219,11 +252,17 @@ function k8s {
     }
     
     if ($action -ieq "stop" -or $action -ieq "down") {
-        Write-Title "Stopping Docker Processes"
-        Get-Process -Name "Docker Desktop" -ErrorAction SilentlyContinue | Stop-Process -Force
-        Start-Sleep -s 2
-        Get-Process com.docker.backend -ErrorAction SilentlyContinue | Stop-Process -Force
-        Start-Sleep -s 2
+        if (Get-Process -Name "[Dd]ocker*" -ErrorAction SilentlyContinue) {
+            Write-Title "Stopping Docker Processes"
+            Get-Process -Name "*[Dd]ocker*" -ErrorAction SilentlyContinue | Stop-Process -Force
+            Start-Sleep -s 2
+        }
+        
+        if(Get-Process -Name "[Pp]odman*") {
+            Write-Title "Stopping Podman"
+            podman machine stop
+            Start-Sleep -s 2
+        }
     }
     
     if (-not $action) {
