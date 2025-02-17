@@ -20,24 +20,53 @@ function gitu {
 }
 
 # Git-Flow Functions
+
+function gf {
+    git flow $args
+}
+
+function gfi {
+    git flow init -d
+}
+
 function gf-init {
     git flow init -d
+}
+
+function gf-feat {
+    git flow feature $args
 }
 
 function gff {
     git flow feature $args
 }
 
+function gffs {
+    git flow feature start $args
+}
+
 function gff-start {
     git flow feature start $args
+}
+
+function gfff {
+    git flow feature finish $args
 }
 
 function gff-finish {
     git flow feature finish $args
 }
 
+function gffp {
+    git flow feature publish $args
+}
+
 function gff-publish {
     git flow feature publish $args
+}
+
+function gfft {
+    git flow feature track $args
 }
 
 function gff-track {
