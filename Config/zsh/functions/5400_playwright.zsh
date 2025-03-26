@@ -42,6 +42,10 @@ function authenticate_aws() {
     local env_name=$1
     validate_environment "$env_name" || return 1
 
+    if [[ "$env_name" == "local" ]]; then 
+        return 0
+    fi
+
     echo "Trying to authenticate in the $env_name environment"
     aws_env_vars=$(uv run "$AUTOMATION_FOLDER/get_env_vars.py" "$env_name")
     lines=("${(f)aws_env_vars}")
