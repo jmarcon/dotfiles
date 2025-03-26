@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  print -P '%F{red}=> 📁️ Loading Functions [5000]"'
-fi
+print_debug '=> 📁️ Loading Functions [5000]' 'red'
 
 ## Source the aliases
 dir=$(dirname $(realpath $0))
@@ -15,8 +13,6 @@ done
 
 ## Source a local file if it exists
 if [ -f ~/.dotfiles/.functions.local.zsh ]; then
-  if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo ". Function Local file"
-  fi
+  print_debug ' 📍 Loading Local Functions' 'yellow'
   source ~/.dotfiles/.functions.local.zsh
 fi

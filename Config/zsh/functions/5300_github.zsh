@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Functions [5300] - Github'
-fi
+print_debug '  ♾️️ Loading Functions [5300] - Github' 'yellow'
 
 ghcs() {
 	FUNCNAME="$funcstack[1]"

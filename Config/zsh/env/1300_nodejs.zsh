@@ -1,5 +1,3 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Environment Variables [1300] - NodeJS'
-fi
+print_debug '  ♾️️ Loading Environment Variables [1300] - NodeJS' 'yellow'
 export NVM_DIR="$HOME/.nvm"

@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  print -P '%F{red}=> 📁️ Setting Environment Variables [1000]'
-fi
+print_debug '=> 📁️ Setting Environment Variables [1000]' 'red'
 
 ## Source the aliases
 dir=$(dirname $(realpath $0))

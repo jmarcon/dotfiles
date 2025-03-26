@@ -1,8 +1,6 @@
 #!/bin/zsh
 
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Setting PATH [3100] - Languages & Runtimes'
-fi
+print_debug '  ♾️️ Setting PATH [3100] - Languages & Runtimes' 'yellow'
 
 ## Dotnet
 if [ -d "$DOTNET_ROOT" ]; then
@@ -30,4 +28,13 @@ fi
 ## Julia
 if [ -d "$HOME/.apps/julia/bin" ]; then
 export PATH="$HOME/.apps/julia/bin:$PATH"
+fi
+
+## Golang
+if [ -d "$HOME/.apps/go/bin" ]; then
+export PATH="$HOME/.apps/go/bin:$PATH"
+fi
+
+if [ -d "$HOME/go/bin" ]; then
+export PATH="$HOME/go/bin:$PATH"
 fi

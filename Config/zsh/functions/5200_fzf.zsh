@@ -1,8 +1,6 @@
 # If fzf is installed 
 if command -v fzf >/dev/null 2>&1; then
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Functions [5200] - FZF'
-fi
+print_debug '  ♾️️ Loading Functions [5200] - FZF' 'yellow'
 fi
 
 ## If fzf and fd are installed

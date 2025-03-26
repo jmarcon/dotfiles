@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Aliases [4600] - Cloud'
-fi
+print_debug '  ♾️️ Loading Aliases [4600] - Cloud' 'yellow'
 
 if command -v docker >/dev/null 2>&1; then
 alias d="docker"

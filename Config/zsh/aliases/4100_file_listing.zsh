@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Aliases [4100] - File Listing'
-fi
+print_debug '  ♾️️ Loading Aliases [4100] - File Listing' 'yellow'
 
 if command -v eza >/dev/null 2>&1; then
 # alias ls='eza --icons=always --color=always  --no-filesize --no-time --no-user --no-permissions --long'

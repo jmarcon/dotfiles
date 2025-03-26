@@ -1,7 +1,5 @@
 #!/bin/zsh 
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Initializing [2999] - Utils'
-fi
+print_debug '  ♾️️ Initializing [2999] - Utils' 'yellow'
 
 # What OS is this?
 # OS detection
@@ -21,10 +19,3 @@ else
     export CURRENT_OS="unknown"
     echo "Unknown OS: $OSTYPE"
 fi
-
-function show_title() {
-  local title="$1"
-  local title_length=${#title}
-  local title_line=$(printf "%${title_length}s" | tr ' ' '=')
-  print -P "%F{red}\n$title\n$title_line\n"
-}

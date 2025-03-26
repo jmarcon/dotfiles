@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Aliases [4999] - Others'
-fi
+print_debug '  ♾️️ Loading Aliases [4999] - Others' 'yellow'
 
 if command -v btop >/dev/null 2>&1; then
 alias top="btop"

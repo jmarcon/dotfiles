@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Aliases [4000] - Common'
-fi
+print_debug '  ♾️️ Loading Aliases [4000] - Common' 'yellow'
 
 alias c="clear"
 

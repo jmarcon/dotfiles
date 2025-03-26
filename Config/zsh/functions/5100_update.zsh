@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Functions [5100] - Update'
-fi
+print_debug '  ♾️️ Loading Functions [5100] - Update' 'yellow'
 
 ## Depends on init/tools.zsh that sets CURRENT_OS
 function update() {
@@ -21,7 +19,7 @@ function update() {
     fi
 
     if command -v brew >/dev/null 2>&1; then
-        local brew="brew update; brew upgrade; brew cleanup"
+        local brew="brew update; brew upgrade; brew upgrade --cask --greedy; brew cleanup"
         sh -c $brew;
     fi
 }

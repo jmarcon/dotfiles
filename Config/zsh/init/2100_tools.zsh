@@ -1,8 +1,6 @@
 #!/bin/zsh
 
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Initializing [2100] - Tools'
-fi
+print_debug '  ♾️️ Initializing [2100] - Tools' 'yellow'
 
 # fzf
 if command -v fzf >/dev/null 2>&1; then

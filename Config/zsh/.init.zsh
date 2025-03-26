@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  print -P '%F{red}=> 📁️ Initializing Shell [2000]'
-fi
+print_debug '=> 📁️ Initializing Shell [2000]' 'red'
 
 ## Source the aliases
 dir=$(dirname $(realpath $0))
