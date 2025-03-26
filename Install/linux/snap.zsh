@@ -22,5 +22,13 @@ if [ "$CURRENT_OS" = "linux" ]; then
         for snap in "${snaps[@]}"; do
             sudo snap install $snap
         done
+
+        declare -a snaps_classic=(
+            "powershell"
+        )
+
+        for snap in "${snaps_classic[@]}"; do
+            sudo snap install $snap --classic
+        done
     fi
 fi
