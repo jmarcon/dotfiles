@@ -1,25 +1,74 @@
 #!/bin/zsh
 print_debug '  ♾️️ Loading Functions [5100] - Update' 'yellow'
 
-## Depends on init/tools.zsh that sets CURRENT_OS
 function update() {
-    if [[ "$CURRENT_OS" == "mac" ]]; then
-        
+    # Detect OS if CURRENT_OS is not set
+    local os_type="$CURRENT_OS"
+    if [[ -z "$os_type" ]]; then
+        case "$(uname -s)" in
+            Darwin*)
+                os_type="mac"
+                ;;
+            Linux*)
+                os_type="linux"
+                ;;
+            *)
+                os_type="unknown"
+                ;;
+        esac
     fi
-
-    if [[ "$CURRENT_OS" == "linux" ]]; then
-        sudo apt update && sudo apt upgrade
-        if command -v snap >/dev/null 2>&1; then
-            sudo snap refresh --list
-        fi
-
-        if command -v flatpak >/dev/null 2>&1; then
-            flatpak update
-        fi
-    fi
-
+    
+    # Print which OS is being updated
+    echo "🔄 Updating system packages for $os_type..."
+    
+    # Update based on detected OS
+    case "$os_type" in
+        "mac")
+            # macOS specific updates
+            if command -v softwareupdate >/dev/null 2>&1; then
+                echo "📱 Checking for macOS updates..."
+                softwareupdate --list
+            fi
+            ;;
+            
+        "linux")
+            echo "🐧 Updating Linux packages..."
+            # APT updates
+            if command -v apt >/dev/null 2>&1; then
+                echo "📦 Updating APT packages..."
+                sudo apt update && sudo apt upgrade -y
+            fi
+            
+            # Snap updates
+            if command -v snap >/dev/null 2>&1; then
+                echo "🔄 Checking for Snap updates..."
+                sudo snap refresh --list
+            fi
+            
+            # Flatpak updates
+            if command -v flatpak >/dev/null 2>&1; then
+                echo "📦 Updating Flatpak packages..."
+                flatpak update -y
+            fi
+            ;;
+            
+        *)
+            echo "⚠️ Unknown OS type: $os_type"
+            ;;
+    esac
+    
+    # Homebrew updates (works on both macOS and Linux)
     if command -v brew >/dev/null 2>&1; then
-        local brew="brew update; brew upgrade; brew upgrade --cask --greedy; brew cleanup"
-        sh -c $brew;
+        echo "🍺 Updating Homebrew packages..."
+        brew update
+        brew upgrade
+        brew upgrade --cask --greedy
+        brew cleanup
     fi
+    
+    echo "✅ System update completed!"
 }
+
+# Shorthand aliases for the update function
+alias upd='update'
+alias up='update'
