@@ -6,20 +6,23 @@ function update() {
     local os_type="$CURRENT_OS"
     if [[ -z "$os_type" ]]; then
         case "$(uname -s)" in
-            Darwin*)
-                os_type="mac"
-                ;;
-            Linux*)
-                os_type="linux"
-                ;;
-            *)
-                os_type="unknown"
-                ;;
+            Darwin*) os_type="mac" ;;
+            Linux*)  os_type="linux" ;;
+            *)       os_type="unknown" ;;
         esac
     fi
     
     # Print which OS is being updated
-    echo "🔄 Updating system packages for $os_type..."
+    notify "🔄 Updating system packages for $os_type..."
+
+    # Report versions of key tools before updating
+    print_color "Current versions:" "cyan"
+    command -v node >/dev/null 2>&1 && echo "Node: $(node -v)"
+    command -v npm >/dev/null 2>&1 && echo "NPM: $(npm -v)"
+    command -v python >/dev/null 2>&1 && echo "Python: $(python --version)"
+    command -v go >/dev/null 2>&1 && echo "Go: $(go version)"
+    command -v rustc >/dev/null 2>&1 && echo "Rust: $(rustc --version)"
+    
     
     # Update based on detected OS
     case "$os_type" in

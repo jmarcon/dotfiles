@@ -49,7 +49,6 @@ def run(playwright: Playwright) -> None:
     else:
         return -1
 
-    page.wait_for_timeout(5000)
     page.get_by_role("button", name=ACCOUNT_TITLE).click()
     page.get_by_test_id("role-creation-action-button").click()
 
