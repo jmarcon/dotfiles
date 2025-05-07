@@ -1,4 +1,4 @@
-#!/bin/zsh 
+#!/bin/zsh
 print_debug '  ♾️️ Initializing [2999] - Utils' 'yellow'
 
 # What OS is this?

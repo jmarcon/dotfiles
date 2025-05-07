@@ -14,4 +14,3 @@ fi
 export PORT=1982
 export APP_ENV=local
 export RUNNING_IN_CONTAINER=false
-

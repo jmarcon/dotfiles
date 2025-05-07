@@ -6,8 +6,7 @@ dir=$(dirname $(realpath $0))
 
 ## Aliases
 ## Get All files in the env folder
-for zfile in "$dir/functions/"*.zsh; 
-do
+for zfile in "$dir/functions/"*.zsh; do
   source $zfile
 done
 

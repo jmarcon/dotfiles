@@ -1,4 +1,4 @@
-#!/bin/zsh 
+#!/bin/zsh
 print_debug '  ♾️️ Loading Environment Variables [1400] - DOTNET' 'yellow'
 # Dotnet
 export DOTNET_ROOT=$HOME/.dotnet

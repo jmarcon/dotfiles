@@ -9,12 +9,12 @@ fi
 
 # Is it windows?
 if [ "$CURRENT_OS" = "windows" ]; then
-  
+
 fi
 
 # Is it macos?
 if [ "$CURRENT_OS" = "macos" ]; then
-  
+
 fi
 
 # Is it linux?
@@ -32,17 +32,17 @@ if [ "$CURRENT_OS" = "linux" ]; then
   fi
 fi
 
-# Is it linux or macos? 
+# Is it linux or macos?
 if [ "$CURRENT_OS" = "linux" ] || [ "$CURRENT_OS" = "macos" ]; then
-    ## Homebrew 
-    brew_file="$dir/homebrew.zsh"
-    if [ -f "$brew_file" ]; then
-      source $brew_file
-    fi
+  ## Homebrew
+  brew_file="$dir/homebrew.zsh"
+  if [ -f "$brew_file" ]; then
+    source $brew_file
+  fi
 
-    ## Git repos
-    git_repos_file="$dir/git_repos.zsh"
-    if [ -f "$git_repos_file" ]; then
-      source $git_repos_file
-    fi
+  ## Git repos
+  git_repos_file="$dir/git_repos.zsh"
+  if [ -f "$git_repos_file" ]; then
+    source $git_repos_file
+  fi
 fi

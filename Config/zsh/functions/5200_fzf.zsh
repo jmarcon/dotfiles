@@ -1,6 +1,6 @@
-# If fzf is installed 
+# If fzf is installed
 if command -v fzf >/dev/null 2>&1; then
-print_debug '  ♾️️ Loading Functions [5200] - FZF' 'yellow'
+  print_debug '  ♾️️ Loading Functions [5200] - FZF' 'yellow'
 fi
 
 ## If fzf and fd are installed
@@ -18,4 +18,3 @@ if command -v fzf >/dev/null 2>&1 && command -v fd >/dev/null 2>&1; then
     source ~/.dotfiles/.fzf-git/fzf-git.sh
   fi
 fi
-

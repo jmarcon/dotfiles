@@ -15,7 +15,7 @@ fi
 # If eza is available, use it for previews
 if command -v eza >/dev/null 2>&1; then
     export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
-else 
+else
     export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 fi
 

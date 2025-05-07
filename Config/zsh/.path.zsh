@@ -1,13 +1,12 @@
 #!/bin/zsh
-print_debug '=> 📁️ Updating PATH env [3000]'  'red'
+print_debug '=> 📁️ Updating PATH env [3000]' 'red'
 
 ## Source the aliases
 dir=$(dirname $(realpath $0))
 
 ## Aliases
 ## Get All files in the env folder
-for zfile in "$dir/path/"*.zsh; 
-do
+for zfile in "$dir/path/"*.zsh; do
   source $zfile
 done
 ## Source a local file if it exists
