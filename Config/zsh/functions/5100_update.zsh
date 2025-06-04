@@ -40,10 +40,6 @@ function update_node() {
         npm install -g npm
         npm update -g
     fi
-
-    if command -v yarn >/dev/null 2>&1; then
-        yarn global add yarn
-    fi
 }
 
 function update_macos() {
