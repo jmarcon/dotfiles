@@ -146,6 +146,17 @@ function update_homebrew() {
     fi
 }
 
+function update_nvim_lazy() {
+    if command -v nvim >/dev/null 2>&1; then
+        echo "--------------------------------"
+        print_color "🔌 Updating Neovim (lazy.nvim) plugins..." "yellow"
+        nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1
+        if [[ $? -ne 0 ]]; then
+            print_color "❌ Failed to update Neovim (lazy.nvim) plugins!" "red"
+        fi
+    fi
+}
+
 
 function update() {
     # Detect OS if CURRENT_OS is not set
@@ -192,6 +203,7 @@ function update() {
     update_homebrew
     update_python_pyenv
     update_node
+    update_nvim_lazy
 
     echo "--------------------------------"
     echo ""
