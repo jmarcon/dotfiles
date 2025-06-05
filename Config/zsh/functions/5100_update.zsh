@@ -3,9 +3,15 @@ print_debug '  ♾️️ Loading Functions [5100] - Update' 'yellow'
 
 function print_versions() {
     print_color "Current versions:" "cyan"
+    echo "--------------------------------"
     command -v node >/dev/null 2>&1 && echo "Node: $(node -v)"
+    command -v yarn >/dev/null 2>&1 && echo "Yarn: $(yarn -v)"
+    command -v bun >/dev/null 2>&1 && echo "Bun: $(bun -v)"
     command -v npm >/dev/null 2>&1 && echo "NPM: $(npm -v)"
+
     command -v python >/dev/null 2>&1 && echo "Python: $(python --version)"
+    command -v pyenv >/dev/null 2>&1 && echo "Pyenv: $(pyenv --version)"
+
     command -v go >/dev/null 2>&1 && echo "Go: $(go version)"
 }
 
@@ -31,12 +37,18 @@ function update_python_pyenv() {
 
 function update_node() {
     if command -v nvm >/dev/null 2>&1; then
+        echo "--------------------------------"
+        echo ""
+        print_color "Updating Node.js" "yellow"
         nvm install node
         nvm use node
         nvm alias default node
     fi
 
     if command -v npm >/dev/null 2>&1; then
+        echo "--------------------------------"
+        echo ""
+        print_color "Updating NPM" "yellow"
         npm install -g npm
         npm update -g
     fi
@@ -46,7 +58,7 @@ function update_macos() {
     if command -v softwareupdate >/dev/null 2>&1; then
         echo "--------------------------------"
         echo ""
-        echo "📦 Updating macOS..."
+        print_color "📦 Updating macOS..." "yellow"
         # Install all available updates
         softwareupdate --install --all --agree-to-license
     fi
@@ -56,7 +68,6 @@ function update_macos_apps() {
     if command -v mas >/dev/null 2>&1; then
         echo "--------------------------------"
         echo ""
-        echo "🛍️ Checking for Mac App Store updates..."
         # Get mas outdated and put into a list of apps
         local mas_outdated
         mas_outdated=$(mas outdated | awk '{print $1}')
@@ -66,12 +77,12 @@ function update_macos_apps() {
 
         # Check if there are any outdated apps
         if [[ -n "$mas_outdated" ]]; then
-            echo "📦 Updating Mac App Store apps..."
+            print_color "🛍️ Checking for Mac App Store updates..." "yellow"
             # Update all outdated apps
             for app in $mas_outdated; do
                 # If app is 640199958 (Xcode) then skip
                 if [[ $app == 640199958 ]]; then
-                    print_color "Skipping Xcode update - it needs to be manually updated or in another account" "yellow"
+                    print_color "Skipping Xcode update - it needs to be manually updated or in another account" "orange"
                     continue
                 fi
 
@@ -82,13 +93,13 @@ function update_macos_apps() {
                 fi
             done
         else
-            echo "✅ No Mac App Store updates available."
+            print_color "✅ No Mac App Store updates available." "green"
         fi
     fi
 }
 
 function update_linux_apt() {
-    echo "🐧 Updating Linux packages..."
+    print_color "🐧 Updating Linux packages..." "yellow"
     # APT updates
     if command -v apt >/dev/null 2>&1; then
         echo "--------------------------------"
@@ -103,7 +114,7 @@ function update_linux_snap() {
     if command -v snap >/dev/null 2>&1; then
         echo "--------------------------------"
         echo ""
-        echo "🔄 Checking for Snap updates..."
+        print_color "🔄 Checking for Snap updates..." "yellow"
         sudo snap refresh --list
     fi
 }
@@ -113,7 +124,7 @@ function update_linux_flatpak() {
     if command -v flatpak >/dev/null 2>&1; then
         echo "--------------------------------"
         echo ""
-        echo "📦 Updating Flatpak packages..."
+        print_color "📦 Updating Flatpak packages..." "yellow"
         flatpak update -y
     fi
 }
@@ -123,7 +134,7 @@ function update_homebrew() {
     if command -v brew >/dev/null 2>&1; then
         echo "--------------------------------"
         echo ""
-        echo "🍺 Updating Homebrew packages..."
+        print_color "🍺 Updating Homebrew packages..." "yellow"
         brew update
         brew upgrade
         brew upgrade --cask --greedy
