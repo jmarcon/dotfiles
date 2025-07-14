@@ -47,7 +47,7 @@ function authenticate_aws() {
     fi
 
     print_color "Trying to authenticate in the $env_name environment" "yellow"
-    aws_env_vars=$(uv run "$AUTOMATION_FOLDER/get_env_vars.py" "$env_name")
+    aws_env_vars=$(uv run --script  "$AUTOMATION_FOLDER/get_env_vars.py" "$env_name")
     # Split output into lines and export variables
     lines=("${(f)aws_env_vars}")
 
@@ -72,7 +72,6 @@ function __set_kubectl_context() {
     
     if command -v kubectl >/dev/null 2>&1; then
         alias k="kubectl --context=$env_name"
-        source <(kubectl completion zsh)
     fi
 }
 
@@ -82,7 +81,6 @@ function __set_helm_context() {
     if command -v helm >/dev/null 2>&1; then
         export HELM_KUBECONTEXT=$env_name
         alias h="helm --kube-context=$env_name"
-        source <(helm completion zsh)
     fi
 }
 

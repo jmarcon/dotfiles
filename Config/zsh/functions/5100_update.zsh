@@ -1,6 +1,16 @@
 #!/bin/zsh
 print_debug '  ♾️️ Loading Functions [5100] - Update' 'yellow'
 
+function print_dotnet_versions() {
+    if command -v dotnet >/dev/null 2>&1; then
+        echo "Dotnet: $(dotnet --version)"
+        echo "--------------------------------"
+        echo "Dotnet Available SDKs"
+        dotnet --list-sdks | awk '{print $1}' | sed 's/\[.*\]//' | awk '{print "  SDK: " $1}'
+
+    fi
+}
+
 function print_versions() {
     print_color "Current versions:" "cyan"
     echo "--------------------------------"
@@ -13,6 +23,8 @@ function print_versions() {
     command -v pyenv >/dev/null 2>&1 && echo "Pyenv: $(pyenv --version)"
 
     command -v go >/dev/null 2>&1 && echo "Go: $(go version)"
+    
+    print_dotnet_versions
 }
 
 function update_python_pyenv() {
@@ -157,6 +169,71 @@ function update_nvim_lazy() {
     fi
 }
 
+function remove_dotnet_older_versions() {
+    # It will remove older versions of each major version installed but the newest
+    if command -v dotnet >/dev/null 2>&1; then
+        echo "--------------------------------"
+        print_color "🧹 Cleaning up older .NET SDK versions..." "yellow"
+        
+        # Get all installed SDKs and group by major version
+        local sdks=($(dotnet --list-sdks | awk '{print $1}'))
+        
+        # Create associative array to track versions by major version
+        declare -A major_versions
+        
+        # Group SDKs by major version
+        for sdk in "${sdks[@]}"; do
+            local major=$(echo $sdk | cut -d. -f1)
+            if [[ -n "${major_versions[$major]}" ]]; then
+                major_versions[$major]="${major_versions[$major]} $sdk"
+            else
+                major_versions[$major]="$sdk"
+            fi
+        done
+        
+        # For each major version, keep only the newest
+        for major in "${(@k)major_versions}"; do
+            local versions_array=(${=major_versions[$major]})
+            
+            # Sort versions and get all but the last (newest)
+            local sorted_versions=($(printf '%s\n' "${versions_array[@]}" | sort -V))
+            local versions_to_remove=(${sorted_versions[@]:0:$((${#sorted_versions[@]}-1))})
+            
+            # Remove older versions
+            for version in "${versions_to_remove[@]}"; do
+                print_color "  Removing .NET SDK $version" "orange"
+                if [[ -d "$DOTNET_ROOT/sdk/$version" ]]; then
+                    rm -rf "$DOTNET_ROOT/sdk/$version"
+                fi
+            done
+            
+            # Show what we're keeping
+            if [[ ${#versions_to_remove[@]} -gt 0 ]]; then
+                print_color "  Keeping .NET SDK ${sorted_versions[-1]} (latest for v$major)" "green"
+            fi
+        done
+        
+        print_color "✅ .NET SDK cleanup completed" "green"
+    fi
+}
+
+function update_dotnet_versions() {
+    if command -v dotnet >/dev/null 2>&1; then
+        # if the file /Users/jm/Downloads/dotnet-install.sh does not exists, 
+        # then return the function
+        if [ ! -f /Users/jm/Downloads/dotnet-install.sh ]; then
+            return
+        fi
+
+        /Users/jm/Downloads/dotnet-install.sh -c 9.0 -i $DOTNET_ROOT
+        /Users/jm/Downloads/dotnet-install.sh -c 8.0 -i $DOTNET_ROOT
+        /Users/jm/Downloads/dotnet-install.sh -c 7.0 -i $DOTNET_ROOT
+        /Users/jm/Downloads/dotnet-install.sh -c 6.0 -i $DOTNET_ROOT
+
+        remove_dotnet_older_versions
+    fi
+}
+
 
 function update() {
     # Detect OS if CURRENT_OS is not set
@@ -204,6 +281,7 @@ function update() {
     update_python_pyenv
     update_node
     update_nvim_lazy
+    update_dotnet_versions
 
     echo "--------------------------------"
     echo ""

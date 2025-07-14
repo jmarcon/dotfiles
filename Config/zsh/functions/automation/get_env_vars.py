@@ -1,5 +1,12 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#   "playwright",
+# ]
+# ///
+
 import os
-import re
 import sys
 from playwright.sync_api import Playwright, sync_playwright, expect
 
