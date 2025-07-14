@@ -134,8 +134,16 @@ function set_kubernetes_context() {
 
 function set_env() {
     local env_name=$1
+    local env_type=$2
+
     validate_environment "$env_name" || return 1
+
+    if [[ "$env_type" == "--no-auth" ]]; then
+        set_kubernetes_context "$env_name"
+        return 0
+    fi
 
     authenticate_aws "$env_name"
     set_kubernetes_context "$env_name"
+    return 0
 }
