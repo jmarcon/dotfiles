@@ -28,6 +28,7 @@ fi
 mkdir ~/.dotfiles
 
 # create a symbolic link from the Config/zsh/.aliases file to the ~/.dotfiles folder
+ln -s $dir/Config/zsh/.global.functions.zsh ~/.dotfiles/.global.functions.zsh 
 ln -s $dir/Config/zsh/.aliases.zsh ~/.dotfiles/.aliases.zsh
 ln -s $dir/Config/zsh/.env.zsh ~/.dotfiles/.env.zsh
 ln -s $dir/Config/zsh/.functions.zsh ~/.dotfiles/.functions.zsh

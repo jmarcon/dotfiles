@@ -1,5 +1,5 @@
 #!/bin/zsh
-print_debug '=> 📁️ Setting Environment Variables [1000]' 'red'
+print_debug '=> 📁️ Setting Environment Variables [1000]' 'blue'
 
 ## Source the aliases
 dir=$(dirname $(realpath $0))
@@ -15,8 +15,7 @@ done
 ### include sensitive information like passwords, api keys, etc
 ### consider adding it to your .gitignore
 if [ -f ~/.dotfiles/.env.local.zsh ]; then
-  if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    echo ". Env local file"
+  if ! source ~/.dotfiles/.env.local.zsh; then
+    print_debug "Error sourcing local env, skipping..." 'red'
   fi
-  source ~/.dotfiles/.env.local.zsh
 fi

@@ -8,3 +8,11 @@ function mkd() {
 function gi() {
     curl -L -s https://www.gitignore.io/api/$@
 }
+
+function print_path() {
+    echo $PATH | tr ':' '\n' | nl
+}
+
+function print_path_sorted() {
+    echo $PATH | tr ':' '\n' | sort | nl
+}

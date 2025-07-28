@@ -2,14 +2,7 @@
 print_debug '  ♾️️ Loading Functions [5400] - Playwright automation' 'yellow'
 
 
-check_command() {
-    if ! command -v $1 &> /dev/null; then
-        echo "Error: $1 required"
-        exit 1
-    fi
-}
-
-check_command "playwright"
+verify_commands playwright || return 1
 
 # Current working directory
 CURRENT_DIR="$(pwd)"
@@ -70,7 +63,7 @@ function authenticate_aws() {
 function __set_kubectl_context() {
     local env_name=$1
     
-    if command -v kubectl >/dev/null 2>&1; then
+    if verify_commands kubectl; then
         alias k="kubectl --context=$env_name"
     fi
 }
@@ -78,7 +71,7 @@ function __set_kubectl_context() {
 function __set_helm_context() {
     local env_name=$1
     
-    if command -v helm >/dev/null 2>&1; then
+    if verify_commands helm; then
         export HELM_KUBECONTEXT=$env_name
         alias h="helm --kube-context=$env_name"
     fi
@@ -87,7 +80,7 @@ function __set_helm_context() {
 function __set_k9s_context() {
     local env_name=$1
 
-    if command -v k9s >/dev/null 2>&1; then
+    if verify_commands k9s; then
         alias k9s="k9s --context=$env_name"
     fi
 }

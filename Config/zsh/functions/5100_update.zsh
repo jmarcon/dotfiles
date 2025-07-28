@@ -2,33 +2,28 @@
 print_debug '  ♾️️ Loading Functions [5100] - Update' 'yellow'
 
 function print_dotnet_versions() {
-    if command -v dotnet >/dev/null 2>&1; then
-        echo "Dotnet: $(dotnet --version)"
-        echo "--------------------------------"
-        echo "Dotnet Available SDKs"
-        dotnet --list-sdks | awk '{print $1}' | sed 's/\[.*\]//' | awk '{print "  SDK: " $1}'
-
+    if verify_commands dotnet; then
+        # echo "Dotnet.: $(dotnet --version)"
+        dotnet --list-sdks | awk '{print $1}' | sed 's/\[.*\]//' | awk '{print ".NET SDK: " $1}'
     fi
 }
 
 function print_versions() {
     print_color "Current versions:" "cyan"
     echo "--------------------------------"
-    command -v node >/dev/null 2>&1 && echo "Node: $(node -v)"
-    command -v yarn >/dev/null 2>&1 && echo "Yarn: $(yarn -v)"
-    command -v bun >/dev/null 2>&1 && echo "Bun: $(bun -v)"
-    command -v npm >/dev/null 2>&1 && echo "NPM: $(npm -v)"
-
-    command -v python >/dev/null 2>&1 && echo "Python: $(python --version)"
-    command -v pyenv >/dev/null 2>&1 && echo "Pyenv: $(pyenv --version)"
-
-    command -v go >/dev/null 2>&1 && echo "Go: $(go version)"
+    verify_commands node   && echo "Node....: $(node -v)"
+    verify_commands yarn   && echo "Yarn....: $(yarn -v)"
+    verify_commands bun    && echo "Bun.....: $(bun -v)"
+    verify_commands npm    && echo "NPM.....: $(npm -v)"
+    verify_commands python && echo "Python..: $(python --version)"
+    verify_commands pyenv  && echo "Pyenv...: $(pyenv --version)"
+    verify_commands go     && echo "Go......: $(go version)"
     
     print_dotnet_versions
 }
 
 function update_python_pyenv() {
-    if command -v pyenv >/dev/null 2>&1; then
+    if verify_commands pyenv; then
         # Get the latest version of python from pyenv install --list
         local latest_version=$(pyenv install --list | grep -v 'dev' | grep -v 'a' | grep -v 't' | grep -v 'b' | grep -v 'rc' | grep -v 'p' | grep -v 'n' | tail -n 1)
         # Remove any spaces from the version
@@ -48,7 +43,7 @@ function update_python_pyenv() {
 }
 
 function update_node() {
-    if command -v nvm >/dev/null 2>&1; then
+    if verify_commands nvm; then
         echo "--------------------------------"
         echo ""
         print_color "Updating Node.js" "yellow"
@@ -57,7 +52,7 @@ function update_node() {
         nvm alias default node
     fi
 
-    if command -v npm >/dev/null 2>&1; then
+    if verify_commands npm; then
         echo "--------------------------------"
         echo ""
         print_color "Updating NPM" "yellow"
@@ -67,7 +62,7 @@ function update_node() {
 }
 
 function update_macos() {
-    if command -v softwareupdate >/dev/null 2>&1; then
+    if verify_commands softwareupdate; then
         echo "--------------------------------"
         echo ""
         print_color "📦 Updating macOS..." "yellow"
@@ -77,7 +72,7 @@ function update_macos() {
 }
 
 function update_macos_apps() {
-    if command -v mas >/dev/null 2>&1; then
+    if verify_commands mas; then
         echo "--------------------------------"
         echo ""
         # Get mas outdated and put into a list of apps
@@ -113,7 +108,7 @@ function update_macos_apps() {
 function update_linux_apt() {
     print_color "🐧 Updating Linux packages..." "yellow"
     # APT updates
-    if command -v apt >/dev/null 2>&1; then
+    if verify_commands apt; then
         echo "--------------------------------"
         echo ""
         echo "📦 Updating APT packages..."
@@ -123,7 +118,7 @@ function update_linux_apt() {
 
 function update_linux_snap() {
     # Snap updates
-    if command -v snap >/dev/null 2>&1; then
+    if verify_commands snap; then
         echo "--------------------------------"
         echo ""
         print_color "🔄 Checking for Snap updates..." "yellow"
@@ -133,7 +128,7 @@ function update_linux_snap() {
 
 function update_linux_flatpak() {
     # Flatpak updates
-    if command -v flatpak >/dev/null 2>&1; then
+    if verify_commands flatpak; then
         echo "--------------------------------"
         echo ""
         print_color "📦 Updating Flatpak packages..." "yellow"
@@ -143,7 +138,7 @@ function update_linux_flatpak() {
 
 function update_homebrew() {
     # Homebrew updates (works on both macOS and Linux)
-    if command -v brew >/dev/null 2>&1; then
+    if verify_commands brew; then
         echo "--------------------------------"
         echo ""
         print_color "🍺 Updating Homebrew packages..." "yellow"
@@ -153,16 +148,18 @@ function update_homebrew() {
         brew cleanup
     fi
 
-    if command -v code >/dev/null 2>&1; then
+    if verify_commands code; then
         code tunnel restart
     fi
 }
 
 function update_nvim_lazy() {
-    if command -v nvim >/dev/null 2>&1; then
+    return 0
+
+    if verify_commands nvim; then
         echo "--------------------------------"
         print_color "🔌 Updating Neovim (lazy.nvim) plugins..." "yellow"
-        nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1
+        nvim --headless "+Lazy! sync" +qa
         if [[ $? -ne 0 ]]; then
             print_color "❌ Failed to update Neovim (lazy.nvim) plugins!" "red"
         fi
@@ -171,7 +168,7 @@ function update_nvim_lazy() {
 
 function remove_dotnet_older_versions() {
     # It will remove older versions of each major version installed but the newest
-    if command -v dotnet >/dev/null 2>&1; then
+    if verify_commands dotnet; then
         echo "--------------------------------"
         print_color "🧹 Cleaning up older .NET SDK versions..." "yellow"
         
@@ -218,17 +215,21 @@ function remove_dotnet_older_versions() {
 }
 
 function update_dotnet_versions() {
-    if command -v dotnet >/dev/null 2>&1; then
+    if verify_commands dotnet; then
         # if the file /Users/jm/Downloads/dotnet-install.sh does not exists, 
         # then return the function
         if [ ! -f /Users/jm/Downloads/dotnet-install.sh ]; then
             return
         fi
 
-        /Users/jm/Downloads/dotnet-install.sh -c 9.0 -i $DOTNET_ROOT
-        /Users/jm/Downloads/dotnet-install.sh -c 8.0 -i $DOTNET_ROOT
-        /Users/jm/Downloads/dotnet-install.sh -c 7.0 -i $DOTNET_ROOT
-        /Users/jm/Downloads/dotnet-install.sh -c 6.0 -i $DOTNET_ROOT
+        echo "--------------------------------"
+        echo ""
+        print_color "🟣️ Updating Dotnet SDKs..." "yellow"
+
+        /Users/jm/Downloads/dotnet-install.sh -c  9.0 -i $DOTNET_ROOT
+        /Users/jm/Downloads/dotnet-install.sh -c  8.0 -i $DOTNET_ROOT
+        /Users/jm/Downloads/dotnet-install.sh -c  7.0 -i $DOTNET_ROOT
+        /Users/jm/Downloads/dotnet-install.sh -c  6.0 -i $DOTNET_ROOT
 
         remove_dotnet_older_versions
     fi

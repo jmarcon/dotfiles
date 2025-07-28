@@ -1,7 +1,7 @@
 #!/bin/zsh
 print_debug '  ♾️️ Loading Aliases [4100] - File Listing' 'yellow'
 
-if command -v eza >/dev/null 2>&1; then
+if verify_commands eza; then
     # alias ls='eza --icons=always --color=always  --no-filesize --no-time --no-user --no-permissions --long'
     alias ls='eza --icons=always --color=always '
     alias ll='eza --icons=always --color=always  --long --all'
