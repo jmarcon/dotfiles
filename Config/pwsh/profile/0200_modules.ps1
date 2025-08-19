@@ -21,6 +21,17 @@ $modules_to_load = @(
 )
 
 foreach ($module in $modules_to_load) {
-    Import-Module -Name "$module" -ErrorAction SilentlyContinue
+    Try {
+        if ($ENV:OSTYPE.Contains("darwin") -eq $true) {
+            if ($module.Contains("PSProfiler") -eq $true) { continue }
+            if ($module.Contains("PSColors") -eq $true) { continue }
+        }
+
+        Import-Module -Name "$module" -ErrorAction Stop
+    }
+    Catch {
+        Write-Host "An error occurred on line: $($_.InvocationInfo.ScriptLineNumber) for loading module $module"
+        Write-Host "Error message: $($_.Exception.Message)"
+    }
 }
 
