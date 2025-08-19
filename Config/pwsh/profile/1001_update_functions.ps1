@@ -37,7 +37,13 @@ function update-pythonmodules {
 
 
 function update-windows {
+    if ($ENV:OSTYPE.Contains("darwin") -eq $true) { 
+        Write-Err "Impossible to update Windows! Running on MacOS"
+        return 
+    }
+
     $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+
     if ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         Write-Title "Updating Windows"
         Get-WindowsUpdate
