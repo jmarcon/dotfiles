@@ -16,3 +16,27 @@ function print_path() {
 function print_path_sorted() {
     echo $PATH | tr ':' '\n' | sort | nl
 }
+
+function IsWindows() {
+    if [[ "$CURRENT_OS" == "windows" ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function IsLinux() {
+    if [[ "$CURRENT_OS" == "linux" ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function IsOsx() {
+    if [[ "$CURRENT_OS" == "mac" ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
