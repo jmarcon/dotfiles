@@ -22,7 +22,7 @@ $modules_to_load = @(
 
 foreach ($module in $modules_to_load) {
     Try {
-        if ($ENV:OSTYPE.Contains("darwin") -eq $true) {
+        if ($ENV:OSTYPE -and $ENV:OSTYPE.Contains("darwin") -eq $true) {
             if ($module.Contains("PSProfiler") -eq $true) { continue }
             if ($module.Contains("PSColors") -eq $true) { continue }
         }

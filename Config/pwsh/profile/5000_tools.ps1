@@ -52,12 +52,21 @@ if(Get-Command "docker" -ErrorAction SilentlyContinue) {
         docker run -t --rm difro/caniuse-cmd $args
     }
 
-    function lint-dockerfile {
+    function ldocker {
         param (
             [Parameter(Mandatory = $false, Position = 0)]
             [string]$DockerFilePath = (Get-Location).Path + "\Dockerfile"
         )
         cat $DockerFilePath | docker run --rm -i hadolint/hadolint:latest-alpine
+    }
+
+    function gitleaks() {
+        param(
+            [Parameter(Mandatory = $false, Position = 0)]
+            [string]$RepoPath = (Get-Location).Path
+        )
+
+        docker run --rm -v "$RepoPath`:/evaluated_directory" zricethezav/gitleaks:latest dir "/evaluated_directory" -v
     }
 }
 
