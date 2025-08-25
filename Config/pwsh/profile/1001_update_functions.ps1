@@ -2,6 +2,25 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
     Write-Host 'Loading Update Functions'
 }
 
+function update-dotnet {
+    # Verify if the dotnet-install.ps1 script is in the downloads folder
+    $downloadsFolder = [System.IO.Path]::Combine($env:USERPROFILE, "Downloads")
+    $dotnetInstaller = [System.IO.Path]::Combine($downloadsFolder, "dotnet-install.ps1")
+
+    if (!(Test-Path $dotnetInstaller)) {
+        # Download the script
+        Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $dotnetInstaller
+    }
+
+    Write-Title "Updading Dotnet Versions"
+
+    & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 6.0
+    & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 7.0
+    & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 8.0
+    & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 9.0
+}
+
+
 function update-dotnet-tools {
     if (!(Get-Command "dotnet" -ErrorAction SilentlyContinue)) { 
         Write-Err "Dotnet not installed"
@@ -185,6 +204,7 @@ function update {
     }
 
     if ($tool -eq "all" -or $tool -eq "dotnet") {
+        update-dotnet
         update-dotnet-tools
     }
 

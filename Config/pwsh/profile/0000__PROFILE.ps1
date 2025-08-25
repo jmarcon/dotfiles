@@ -34,6 +34,7 @@ $pfiles = @(
     '3000_ohmyposh'
     '4000_psreadline_profile'
     '5000_tools'
+    '6000_ai'
 )
 
 # Loop through each profile file and load it if it exists

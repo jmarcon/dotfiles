@@ -60,3 +60,8 @@ if(Get-Command "docker" -ErrorAction SilentlyContinue) {
         cat $DockerFilePath | docker run --rm -i hadolint/hadolint:latest-alpine
     }
 }
+
+# VFOX
+if(Get-Command "vfox" -ErrorAction SilentlyContinue) {
+    Invoke-Expression "$(vfox activate pwsh)"
+}

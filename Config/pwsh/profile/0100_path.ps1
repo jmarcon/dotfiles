@@ -66,6 +66,7 @@ Add-Path-UserProfile "\AppData\local\multipass\bin"
 # Dotnet path
 if ($ENV:DOTNET_ROOT -ne $null -and $ENV:DOTNET_ROOT -ne '') {
     Remove-Path "C:\Program Files\dotnet\"
+    Remove-Path-UserProfile "\AppData\Local\Microsoft\dotnet\"
+    
     Add-Path $ENV:DOTNET_ROOT
-
 }
