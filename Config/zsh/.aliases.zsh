@@ -1,22 +1,23 @@
 #!/bin/zsh
+print_debug '=> 📁️  Loading Aliases [4000]' 'blue'
 
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{red}=> 📁️  Loading Aliases [4000]'
-fi
 # ## Source the aliases
 # dir=$(dirname $(realpath $0))
 
 ## Aliases
 ## Get All files in the aliases folder
-for zfile in "$dir/aliases/"*.zsh;
-do
-  source $zfile
+for zfile in "$dir/aliases/"*.zsh; do
+  if ! source "$zfile"; then
+    print_debug "Error sourcing $zfile, skipping..." 'red'
+  fi
 done
 
 ## Source a local file if it exists
 if [ -f ~/.dotfiles/.aliases.local.zsh ]; then
   if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-      echo ". Aliases local file"
+    echo ". Aliases local file"
   fi
-  source ~/.dotfiles/.aliases.local.zsh
+  if ! source ~/.dotfiles/.aliases.local.zsh; then
+    print_debug "Error sourcing local aliases, skipping..." 'red'
+  fi
 fi

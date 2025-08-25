@@ -1,12 +1,42 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Functions [5000] - Utils'
-fi
+print_debug '  ♾️️ Loading Functions [5000] - Utils' 'yellow'
 
 function mkd() {
-    mkdir -p "$@" && cd "$_";
+    mkdir -p "$@" && cd "$_"
 }
 
 function gi() {
-    curl -L -s https://www.gitignore.io/api/$@ ;
+    curl -L -s https://www.gitignore.io/api/$@
+}
+
+function print_path() {
+    echo $PATH | tr ':' '\n' | nl
+}
+
+function print_path_sorted() {
+    echo $PATH | tr ':' '\n' | sort | nl
+}
+
+function IsWindows() {
+    if [[ "$CURRENT_OS" == "windows" ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function IsLinux() {
+    if [[ "$CURRENT_OS" == "linux" ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function IsOsx() {
+    if [[ "$CURRENT_OS" == "mac" ]]; then
+        return 1
+    else
+        return 0
+    fi
 }

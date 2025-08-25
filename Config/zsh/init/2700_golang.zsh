@@ -1,7 +1,5 @@
 #!/bin/zsh
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Initializing [2700] - GO Lang'
-fi
+print_debug '  ♾️️ Initializing [2700] - GO Lang' 'yellow'
 
 if [ -d "$HOME/.cargo" ]; then
   . "$HOME/.cargo/env"

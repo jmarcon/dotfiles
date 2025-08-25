@@ -1,13 +1,11 @@
 #!/bin/zsh
-# Activate the debug mode
 export DEBUG_DOTFILES="false"
+[ -f ~/.dotfiles/.global.functions.zsh ] && source ~/.dotfiles/.global.functions.zsh
+[ -f ~/.dotfiles/.global.functions.local.zsh ] && source ~/.dotfiles/.global.functions.local.zsh
 
 # If the DEBUG_DOTFILES variable is set to true, then print the message
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-  echo "DEBUG_DOTFILES is enabled..."
-fi
+print_debug "DEBUG_DOTFILES is enabled..." "orange"
 
-# Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
@@ -32,3 +30,17 @@ compinit
 ## Source Aliases and Functions
 [ -f ~/.dotfiles/.aliases.zsh ] && source ~/.dotfiles/.aliases.zsh
 [ -f ~/.dotfiles/.functions.zsh ] && source ~/.dotfiles/.functions.zsh
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+
+# bun completions
+[ -s "/Users/jm/.bun/_bun" ] && source "/Users/jm/.bun/_bun"
+
+# bun
+
+export BUN_INSTALL="$HOME/.bun"
+add_in_path "$BUN_INSTALL/bin"
+add_in_path "$HOME/.local/bin"
+
+clean_path

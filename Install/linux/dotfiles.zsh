@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# get the ttimestamp from now 
+# get the ttimestamp from now
 timestamp=$(date +%Y%m%d%H%M%S)
 dir="$(dirname $(dirname $(realpath $0)))"
 
@@ -16,7 +16,7 @@ fi
 echo "Copying the $dir/Config/zsh/.zshrc file to the home folder"
 cp $dir/Config/zsh/.zshrc ~/.zshrc
 
-# --- 
+# ---
 # create a bkp from the original folder (~/.dotfiles), create a new backup every time
 # If a folder .dotfiles exists, create a backup and remove the original folder
 if [ -d ~/.dotfiles ]; then
@@ -28,6 +28,7 @@ fi
 mkdir ~/.dotfiles
 
 # create a symbolic link from the Config/zsh/.aliases file to the ~/.dotfiles folder
+ln -s $dir/Config/zsh/.global.functions.zsh ~/.dotfiles/.global.functions.zsh 
 ln -s $dir/Config/zsh/.aliases.zsh ~/.dotfiles/.aliases.zsh
 ln -s $dir/Config/zsh/.env.zsh ~/.dotfiles/.env.zsh
 ln -s $dir/Config/zsh/.functions.zsh ~/.dotfiles/.functions.zsh
@@ -37,7 +38,7 @@ ln -s $dir/Config/zsh/.path.zsh ~/.dotfiles/.path.zsh
 # create a symbolic link from the folder Config/zsh/aliases to the ~/.dotfiles folder
 
 ## Clean the symbolic links
-# Verify if the symbolic link exists 
+# Verify if the symbolic link exists
 if [ -L ~/.dotfiles/aliases ]; then
   # remove the symbolic link
   echo "Removing the symbolic link ~/.dotfiles/aliases"

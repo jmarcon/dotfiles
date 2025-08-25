@@ -1,7 +1,6 @@
 #!/bin/zsh
 
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Setting PATH [3200] - Plugins'
-fi
+print_debug '  ♾️️ Setting PATH [3200] - Plugins' 'yellow'
 
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+add_in_path "${KREW_ROOT:-$HOME/.krew}/bin"
+# export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"

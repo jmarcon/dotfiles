@@ -1,12 +1,10 @@
-# If fzf is installed 
-if command -v fzf >/dev/null 2>&1; then
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Loading Functions [5200] - FZF'
-fi
+# If fzf is installed
+if verify_commands fzf; then
+  print_debug '  ♾️️ Loading Functions [5200] - FZF' 'yellow'
 fi
 
 ## If fzf and fd are installed
-if command -v fzf >/dev/null 2>&1 && command -v fd >/dev/null 2>&1; then
+if verify_commands fzf fd; then
   _fzf_compgen_path() {
     fd --hidden --exclude .git . "$1"
   }
@@ -20,4 +18,3 @@ if command -v fzf >/dev/null 2>&1 && command -v fd >/dev/null 2>&1; then
     source ~/.dotfiles/.fzf-git/fzf-git.sh
   fi
 fi
-

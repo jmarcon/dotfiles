@@ -1,8 +1,7 @@
 #!/bin/zsh
 
-if [[ "$DEBUG_DOTFILES" == "true" ]]; then
-    print -P '%F{yellow}  ♾️️ Setting PATH [3000] - Common'
-fi
+print_debug '  ♾️️ Setting PATH [3000] - Common' 'yellow'
 
-export PATH="$HOME/.apps:$PATH"
-export PATH="$HOME/.scripts:$PATH"
+add_in_path "$HOME/.apps"
+add_in_path "$HOME/.scripts"
+add_in_path "$HOME/.local/bin"

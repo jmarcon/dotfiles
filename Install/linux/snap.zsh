@@ -6,7 +6,7 @@ path=$(realpath $0)
 dir=$(dirname $path)
 os_file="$dir/os.zsh"
 if [ -f "$os_file" ]; then
-  source $os_file
+    source $os_file
 fi
 
 # If in linux

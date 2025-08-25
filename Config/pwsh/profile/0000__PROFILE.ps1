@@ -49,7 +49,13 @@ foreach ($pfile in $pfiles) {
     }
 
     if (Test-Path ($ipf)) {
-        . $ipf
+        Try {
+            . $ipf -ErrorAction Stop
+        }
+        Catch {
+            Write-Host "An error occurred on line: $($_.InvocationInfo.ScriptLineNumber)"
+            Write-Host "Error message: $($_.Exception.Message)"
+        }
     }
     else {
         Write-Host "$ipf Not Found"
