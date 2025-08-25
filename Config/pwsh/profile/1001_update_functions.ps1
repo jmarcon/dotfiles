@@ -40,6 +40,16 @@ function update-dotnet-tools {
     }
 }
 
+function update-nvim-lazy() {
+    if (!(Get-Command "nvim" -ErrorAction SilentlyContinue)) { 
+        Write-Err "Neovim not installed"
+        return
+    }
+
+    Write-Title "Updating Neovim Plugins"
+    nvim --headless "+Lazy! update" +qa
+}
+
 
 
 function update-pythonmodules {
@@ -56,7 +66,7 @@ function update-pythonmodules {
 
 
 function update-windows {
-    if ($ENV:OSTYPE.Contains("darwin") -eq $true) { 
+    if ($ENV:OSTYPE -and $ENV:OSTYPE.Contains("darwin") -eq $true) { 
         Write-Err "Impossible to update Windows! Running on MacOS"
         return 
     }
