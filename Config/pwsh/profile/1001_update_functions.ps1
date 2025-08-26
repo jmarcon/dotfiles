@@ -191,7 +191,6 @@ function update-vscode {
     code tunnel service install
 }
 
-
 function update {
     Param(
         [Parameter(Mandatory = $false, Position = 0)]
@@ -201,42 +200,149 @@ function update {
 
     $tool = $tool.ToLower()
 
+    # Executa winfetch primeiro se for "all"
     if ($tool -eq "all") {
         if (Get-Command "winfetch" -ErrorAction SilentlyContinue) {
             winfetch
         }
     }
 
+    # Obtém o caminho do perfil atual
+    $profilePath = $PROFILE.CurrentUserAllHosts
+    if (-not (Test-Path $profilePath)) {
+        $profilePath = $PROFILE.CurrentUserCurrentHost
+    }
+
+    # Lista de jobs a serem executados
+    $jobs = @()
+
+    # Define as tarefas baseadas no parâmetro
+    $tasksToRun = @()
+
     if ($tool -eq "all" -or $tool -eq "scoop") {
-        update-scoop
+        $tasksToRun += @{
+            Name = "Scoop"
+            ScriptBlock = { 
+                param($profilePath)
+                if (Test-Path $profilePath) { 
+                    . $profilePath 
+                }
+                update-scoop 
+            }
+        }
     }
 
     if ($tool -eq "all" -or $tool -eq "choco") {
-        update-choco
+        $tasksToRun += @{
+            Name = "Chocolatey"
+            ScriptBlock = { 
+                param($profilePath)
+                if (Test-Path $profilePath) { 
+                    . $profilePath 
+                }
+                update-choco 
+            }
+        }
     }
 
     if ($tool -eq "all" -or $tool -eq "npm") {
-        update-npm
+        $tasksToRun += @{
+            Name = "NPM"
+            ScriptBlock = { 
+                param($profilePath)
+                if (Test-Path $profilePath) { 
+                    . $profilePath 
+                }
+                update-npm 
+            }
+        }
     }
 
     if ($tool -eq "all" -or $tool -eq "dotnet") {
-        update-dotnet
-        update-dotnet-tools
+        $tasksToRun += @{
+            Name = "DotNet"
+            ScriptBlock = { 
+                param($profilePath)
+                if (Test-Path $profilePath) { 
+                    . $profilePath 
+                }
+                update-dotnet
+                update-dotnet-tools
+            }
+        }
     }
 
     if ($tool -eq "all" -or $tool -eq "python") {
-        update-pythonmodules
+        $tasksToRun += @{
+            Name = "Python"
+            ScriptBlock = { 
+                param($profilePath)
+                if (Test-Path $profilePath) { 
+                    . $profilePath 
+                }
+                update-pythonmodules 
+            }
+        }
+    }
+    if ($tasksToRun.Count -gt 0) {
+        Write-Host "Iniciando $($tasksToRun.Count) tarefa(s) em paralelo..." -ForegroundColor Green
+
+        # Inicia os jobs passando o caminho do perfil
+        foreach ($task in $tasksToRun) {
+            $job = Start-Job -Name $task.Name -ScriptBlock $task.ScriptBlock -ArgumentList $profilePath
+            $jobs += $job
+            Write-Host "✓ Iniciado: $($task.Name)" -ForegroundColor Cyan
+        }
+
+        # Monitora o progresso dos jobs
+        Write-Host "`nMonitorando progresso dos jobs..." -ForegroundColor Yellow
+        
+        do {
+            $runningJobs = $jobs | Where-Object { $_.State -eq "Running" }
+            $completedJobs = $jobs | Where-Object { $_.State -eq "Completed" }
+            $failedJobs = $jobs | Where-Object { $_.State -eq "Failed" }
+            
+            Write-Host "`r[Running: $($runningJobs.Count) | Completed: $($completedJobs.Count) | Failed: $($failedJobs.Count)]" -NoNewline -ForegroundColor White
+            Start-Sleep -Seconds 1
+            
+        } while ($runningJobs.Count -gt 0)
+
+        Write-Host "`n`nTodas as tarefas finalizaram!" -ForegroundColor Green
+
+        # Exibe resultados e limpa os jobs
+        foreach ($job in $jobs) {
+            Write-Host "`n--- Resultado: $($job.Name) ---" -ForegroundColor Magenta
+            
+            if ($job.State -eq "Completed") {
+                Write-Host "✓ Sucesso" -ForegroundColor Green
+                $result = Receive-Job -Job $job
+                if ($result) {
+                    $result | Write-Host
+                }
+            }
+            elseif ($job.State -eq "Failed") {
+                Write-Host "✗ Falhou" -ForegroundColor Red
+                $error = Receive-Job -Job $job 2>&1
+                if ($error) {
+                    $error | Write-Host -ForegroundColor Red
+                }
+            }
+            
+            Remove-Job -Job $job
+        }
+
+        Write-Host "`nTodas as atualizações concluídas!" -ForegroundColor Green
     }
 
     if ($tool -eq "all" -or $tool -eq "winget") {
-        update-winget
+        update-winget 
     }
 
     if ($tool -eq "all" -or $tool -eq "windows") {
-        update-windows
+        update-windows 
     }
 
     if ($tool -eq "code") {
-        update-vscode
+        update-vscode 
     }
 }
