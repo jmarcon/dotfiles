@@ -2,6 +2,13 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
     Write-Host 'Setting PSReadLine Profile'
 }
 
+if ($env:TERM -eq "dumb" -or [Environment]::GetCommandLineArgs() -contains "-NonInteractive" -or $Host.Name -eq "ConsoleHost") {
+    # Não carrega recursos que dependem de terminal interativo
+    $env:SKIP_PSREADLINE = $true
+}
+
+
+if (-not $env:SKIP_PSREADLINE -and $Host.Name -eq "ConsoleHost") {
 # ---
 
 
@@ -619,4 +626,5 @@ Set-PSReadLineKeyHandler -Key Ctrl+Shift+t `
     [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dotnet test")
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}
 }
