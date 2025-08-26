@@ -285,17 +285,15 @@ function update {
         }
     }
     if ($tasksToRun.Count -gt 0) {
-        Write-Host "Iniciando $($tasksToRun.Count) tarefa(s) em paralelo..." -ForegroundColor Green
+        Write-Host "Starting $($tasksToRun.Count) task(s) in parallel..." -ForegroundColor Green
 
-        # Inicia os jobs passando o caminho do perfil
         foreach ($task in $tasksToRun) {
             $job = Start-Job -Name $task.Name -ScriptBlock $task.ScriptBlock -ArgumentList $profilePath
             $jobs += $job
-            Write-Host "✓ Iniciado: $($task.Name)" -ForegroundColor Cyan
+            Write-Host "♾️ Updating $($task.Name)" -ForegroundColor Cyan
         }
 
-        # Monitora o progresso dos jobs
-        Write-Host "`nMonitorando progresso dos jobs..." -ForegroundColor Yellow
+        Write-Host "`nMonitoring jobs..." -ForegroundColor Yellow
         
         do {
             $runningJobs = $jobs | Where-Object { $_.State -eq "Running" }
@@ -307,21 +305,20 @@ function update {
             
         } while ($runningJobs.Count -gt 0)
 
-        Write-Host "`n`nTodas as tarefas finalizaram!" -ForegroundColor Green
+        Write-Host "`n`nAll tasks have completed!" -ForegroundColor Green
 
-        # Exibe resultados e limpa os jobs
         foreach ($job in $jobs) {
-            Write-Host "`n--- Resultado: $($job.Name) ---" -ForegroundColor Magenta
+            Write-Host "`n--- Result: $($job.Name) ---" -ForegroundColor Magenta
             
             if ($job.State -eq "Completed") {
-                Write-Host "✓ Sucesso" -ForegroundColor Green
+                Write-Host "✓ Success" -ForegroundColor Green
                 $result = Receive-Job -Job $job
                 if ($result) {
                     $result | Write-Host
                 }
             }
             elseif ($job.State -eq "Failed") {
-                Write-Host "✗ Falhou" -ForegroundColor Red
+                Write-Host "✗ Failed" -ForegroundColor Red
                 $error = Receive-Job -Job $job 2>&1
                 if ($error) {
                     $error | Write-Host -ForegroundColor Red
@@ -331,7 +328,7 @@ function update {
             Remove-Job -Job $job
         }
 
-        Write-Host "`nTodas as atualizações concluídas!" -ForegroundColor Green
+        Write-Host "`nAll updates completed!" -ForegroundColor Green
     }
 
     if ($tool -contains "all" -or $tool -contains "winget") {
