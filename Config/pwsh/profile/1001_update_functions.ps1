@@ -290,7 +290,7 @@ function update {
         foreach ($task in $tasksToRun) {
             $job = Start-Job -Name $task.Name -ScriptBlock $task.ScriptBlock -ArgumentList $profilePath
             $jobs += $job
-            Write-Host "♾️ Updating $($task.Name)" -ForegroundColor Cyan
+            Write-Host "♾️   Updating $($task.Name)" -ForegroundColor Cyan
         }
 
         Write-Host "`nMonitoring jobs..." -ForegroundColor Yellow
