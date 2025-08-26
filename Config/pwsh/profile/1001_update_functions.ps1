@@ -193,9 +193,9 @@ function update-vscode {
 
 function update {
     Param(
-        [Parameter(Mandatory = $false, Position = 0)]
+        [Parameter(Mandatory = $false, ValueFromRemainingArguments = $true)]
         [ValidateSet("all", "scoop", "choco", "npm", "dotnet", "python", "winget", "windows", "code")]
-        [string]$tool = "all"
+        [string[]]$tool = $("all")
     )
 
     $tool = $tool.ToLower()
@@ -219,7 +219,7 @@ function update {
     # Define as tarefas baseadas no parâmetro
     $tasksToRun = @()
 
-    if ($tool -eq "all" -or $tool -eq "scoop") {
+    if ($tool -contains "all" -or $tool -contains "scoop") {
         $tasksToRun += @{
             Name = "Scoop"
             ScriptBlock = { 
@@ -232,7 +232,7 @@ function update {
         }
     }
 
-    if ($tool -eq "all" -or $tool -eq "choco") {
+    if ($tool -contains "all" -or $tool -contains "choco") {
         $tasksToRun += @{
             Name = "Chocolatey"
             ScriptBlock = { 
@@ -245,7 +245,7 @@ function update {
         }
     }
 
-    if ($tool -eq "all" -or $tool -eq "npm") {
+    if ($tool -contains "all" -or $tool -contains "npm") {
         $tasksToRun += @{
             Name = "NPM"
             ScriptBlock = { 
@@ -258,7 +258,7 @@ function update {
         }
     }
 
-    if ($tool -eq "all" -or $tool -eq "dotnet") {
+    if ($tool -contains "all" -or $tool -contains "dotnet") {
         $tasksToRun += @{
             Name = "DotNet"
             ScriptBlock = { 
@@ -272,7 +272,7 @@ function update {
         }
     }
 
-    if ($tool -eq "all" -or $tool -eq "python") {
+    if ($tool -contains "all" -or $tool -contains "python") {
         $tasksToRun += @{
             Name = "Python"
             ScriptBlock = { 
@@ -334,15 +334,15 @@ function update {
         Write-Host "`nTodas as atualizações concluídas!" -ForegroundColor Green
     }
 
-    if ($tool -eq "all" -or $tool -eq "winget") {
+    if ($tool -contains "all" -or $tool -contains "winget") {
         update-winget 
     }
 
-    if ($tool -eq "all" -or $tool -eq "windows") {
+    if ($tool -contains "all" -or $tool -contains "windows") {
         update-windows 
     }
 
-    if ($tool -eq "code") {
+    if ($tool -contains "code") {
         update-vscode 
     }
 }
