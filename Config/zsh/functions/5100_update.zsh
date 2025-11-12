@@ -201,6 +201,9 @@ function remove_dotnet_older_versions() {
                 print_color "  Removing .NET SDK $version" "orange"
                 if [[ -d "$DOTNET_ROOT/sdk/$version" ]]; then
                     rm -rf "$DOTNET_ROOT/sdk/$version"
+					rm -rf "$DOTNET_ROOT/host/fxr/$version"
+					rm -rf "$DOTNET_ROOT/shared/Microsoft.NETCore.App/$version"
+					rm -rf "$DOTNET_ROOT/shared/Microsoft.AspNetCore.App/$version"
                 fi
             done
             
@@ -226,10 +229,19 @@ function update_dotnet_versions() {
         echo ""
         print_color "🟣️ Updating Dotnet SDKs..." "yellow"
 
-        /Users/jm/Downloads/dotnet-install.sh -c  9.0 -i $DOTNET_ROOT
-        /Users/jm/Downloads/dotnet-install.sh -c  8.0 -i $DOTNET_ROOT
-        /Users/jm/Downloads/dotnet-install.sh -c  7.0 -i $DOTNET_ROOT
-        /Users/jm/Downloads/dotnet-install.sh -c  6.0 -i $DOTNET_ROOT
+        # List of .NET SDK versions to maintain
+        local dotnet_versions=(
+            10.0
+            9.0
+            8.0
+            7.0
+            6.0
+        )
+
+        # Install each .NET SDK version
+        for version in "${dotnet_versions[@]}"; do
+            /Users/jm/Downloads/dotnet-install.sh -c $version -i $DOTNET_ROOT --arch arm64
+        done
 
         remove_dotnet_older_versions
     fi
