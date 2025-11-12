@@ -62,3 +62,77 @@ function pull_all_repos() {
 
     echo "\n✅ All repositories updated!"
 }
+
+# Function to backup all git repositories with complete branch and change information
+# Fetches all remote branches and ensures they exist locally
+function backup_all_repos() {
+    local initial_dir=$(pwd)
+
+    echo "Starting full backup of Git repositories from $initial_dir...\n"
+
+    # Find all .git directories and process each repository
+    find . -type d -name ".git" | while read gitdir; do
+        repo_path=$(dirname "$gitdir")
+
+        echo "\n📂 Repository: $repo_path"
+        cd "$repo_path"
+
+        # Check if remote exists
+        if ! git remote -v | grep -q fetch; then
+            echo "⚠️  No remote configured, skipping."
+            cd "$initial_dir"
+            continue
+        fi
+
+        # Fetch all remotes
+        echo "Fetching all remotes..."
+        git fetch --all --tags --prune
+
+        # Store current branch to restore later
+        current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+        # Get list of all remote branches
+        echo "Processing remote branches..."
+        git branch -r | grep -v '\->' | while read remote_branch; do
+            # Extract branch name without remote prefix
+            branch_name=$(echo "$remote_branch" | sed 's/.*\///')
+
+            # Check if local branch exists
+            if git show-ref --verify --quiet "refs/heads/$branch_name"; then
+                echo "  ✓ Updating local branch: $branch_name"
+                git checkout -q "$branch_name"
+                git pull
+            else
+                echo "  + Creating and pulling local branch: $branch_name from $remote_branch"
+                git checkout -b "$branch_name" "$remote_branch"
+            fi
+        done
+
+        # Return to original branch if it exists
+        if [[ -n "$current_branch" ]]; then
+            echo "Returning to original branch: $current_branch"
+            git checkout -q "$current_branch"
+        fi
+
+        # Report current status
+        echo "\nRepository status:"
+        echo "  Local branches:"
+        git branch | sed 's/^/    /'
+
+        echo "  Uncommitted changes:"
+        if [[ -n $(git status --porcelain) ]]; then
+            git status --short | sed 's/^/    /'
+        else
+            echo "    (none)"
+        fi
+
+        echo "  Tags:"
+        local tag_count=$(git tag | wc -l | tr -d ' ')
+        echo "    Total: $tag_count tags"
+
+        cd "$initial_dir"
+    done
+
+    echo "\n✅ Backup complete!"
+}
+

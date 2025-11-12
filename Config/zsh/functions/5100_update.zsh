@@ -237,6 +237,52 @@ function update_dotnet_versions() {
 
 
 function update() {
+    # Parse command line arguments
+    local filters=("$@")
+    
+    # Show help if requested
+    if [[ "$1" == "help" ]]; then
+        echo "Usage: update [filters...]"
+        echo ""
+        echo "Available filters:"
+        echo "  macos        - Update macOS system"
+        echo "  apps         - Update Mac App Store apps"
+        echo "  apt          - Update APT packages (Linux)"
+        echo "  snap         - Update Snap packages (Linux)"
+        echo "  flatpak      - Update Flatpak packages (Linux)"
+        echo "  homebrew     - Update Homebrew packages"
+        echo "  python       - Update Python via pyenv"
+        echo "  node         - Update Node.js and NPM"
+        echo "  nvim         - Update Neovim plugins"
+        echo "  dotnet       - Update .NET SDKs"
+        echo ""
+        echo "Examples:"
+        echo "  update                    # Update everything"
+        echo "  update node dotnet        # Update only Node.js and .NET"
+        echo "  update homebrew python    # Update only Homebrew and Python"
+        return 0
+    fi
+
+    # If no filters provided, update everything
+    local update_all=false
+    if [[ ${#filters[@]} -eq 0 ]]; then
+        update_all=true
+    fi
+
+    # Helper function to check if a filter is requested
+    function should_update() {
+        local component="$1"
+        if [[ "$update_all" == true ]]; then
+            return 0
+        fi
+        for filter in "${filters[@]}"; do
+            if [[ "$filter" == "$component" ]]; then
+                return 0
+            fi
+        done
+        return 1
+    }
+
     # Detect OS if CURRENT_OS is not set
     local os_type="$CURRENT_OS"
     if [[ -z "$os_type" ]]; then
@@ -254,35 +300,84 @@ function update() {
     fi
 
     # Print which OS is being updated
-    notify "🔄 Updating system packages for $os_type..."
+    if [[ "$update_all" == true ]]; then
+        notify "🔄 Updating system packages for $os_type..."
+    else
+        notify "🔄 Updating selected components for $os_type: ${filters[*]}"
+    fi
 
     # Report versions of key tools before updating
-    print_versions
+    if should_update "versions" || [[ "$update_all" == true ]]; then
+        print_versions
+    fi
 
-    # Update based on detected OS
-    case "$os_type" in
-    "mac")
-        # macOS specific updates
-        update_macos
-        update_macos_apps
-        ;;
+	function update_os_specific() {
+		local os_type="$1"
+		shift
+		local filters=("$@")
+		
+		# Helper function to check if a filter is requested
+		function should_update() {
+			local component="$1"
+			if [[ ${#filters[@]} -eq 0 ]]; then
+				return 0
+			fi
+			for filter in "${filters[@]}"; do
+				if [[ "$filter" == "$component" ]]; then
+					return 0
+				fi
+			done
+			return 1
+		}
 
-    "linux")
-        update_linux_apt
-        update_linux_snap
-        update_linux_flatpak
-        ;;
+		# Update based on detected OS
+		case "$os_type" in
+		"mac")
+			# macOS specific updates
+			if should_update "macos"; then
+				update_macos
+			fi
+			if should_update "apps"; then
+				update_macos_apps
+			fi
+			;;
 
-    *)
-        echo "⚠️ Unknown OS type: $os_type"
-        ;;
-    esac
+		"linux")
+			if should_update "apt"; then
+				update_linux_apt
+			fi
+			if should_update "snap"; then
+				update_linux_snap
+			fi
+			if should_update "flatpak"; then
+				update_linux_flatpak
+			fi
+			;;
+
+		*)
+			echo "⚠️ Unknown OS type: $os_type"
+			;;
+		esac
+	}
     
-    update_homebrew
-    update_python_pyenv
-    update_node
-    update_nvim_lazy
-    update_dotnet_versions
+    if should_update "homebrew"; then
+        update_homebrew
+    fi
+    if should_update "python"; then
+        update_python_pyenv
+    fi
+    if should_update "node"; then
+        update_node
+    fi
+    if should_update "nvim"; then
+        update_nvim_lazy
+    fi
+    if should_update "dotnet"; then
+        update_dotnet_versions
+    fi
+	
+	update_os_specific "$os_type"
+
 
     echo "--------------------------------"
     echo ""
