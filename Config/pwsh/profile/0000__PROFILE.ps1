@@ -3,18 +3,16 @@ $ENV:PROFILE_DEBUG = $false
 
 # Set the profile path if not already set
 if ($null -eq $ENV:PROFILE_PATH) {
-    $ENV:PROFILE_PATH = 'J:\Scripts\profile\'
+    # Use the directory where this script is located
+    $ENV:PROFILE_PATH = $PSScriptRoot
+    if ($ENV:PROFILE_DEBUG -eq $true) {
+        Write-Host "Set PROFILE_PATH to: $ENV:PROFILE_PATH" -ForegroundColor Magenta
+    }
 }
-
-# Function to open a profile file
-function Open-Profile-File {
-    Param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [string]$file_name
-    )
-
-    $profile_file_path = Join-Path -Path $ENV:PROFILE_PATH -ChildPath "$file_name.ps1"
-    return $profile_file_path
+else {
+    if ($ENV:PROFILE_DEBUG -eq $true) {
+        Write-Host "PROFILE_PATH already set to: $ENV:PROFILE_PATH" -ForegroundColor Magenta
+    }
 }
 
 # List of profile files to load
@@ -39,7 +37,11 @@ $pfiles = @(
 
 # Loop through each profile file and load it if it exists
 foreach ($pfile in $pfiles) {
-    $ipf = Open-Profile-File $pfile
+    $ipf = Join-Path -Path $ENV:PROFILE_PATH -ChildPath "$pfile.ps1"
+
+    if ($ENV:PROFILE_DEBUG -eq $true) {
+        Write-Host "Loading: $ipf" -ForegroundColor Cyan
+    }
 
     if (-not ($PSVersionTable.PSVersion.Major -ge 7)) {
         # Skip github integration for older versions of powershell
@@ -50,14 +52,23 @@ foreach ($pfile in $pfiles) {
 
     if (Test-Path ($ipf)) {
         Try {
-            . $ipf -ErrorAction Stop
+            # Load the file content and execute it with global scope prefix for functions
+            $content = Get-Content -Path $ipf -Raw
+            # Replace "function " with "function global:" to ensure all functions are global
+            $content = $content -replace '(?m)^(\s*)function\s+(?!global:)(\w+[-\w]*)', '$1function global:$2'
+            Invoke-Expression $content
+
+            if ($ENV:PROFILE_DEBUG -eq $true) {
+                Write-Host "  ✓ Loaded successfully" -ForegroundColor Green
+            }
         }
         Catch {
-            Write-Host "An error occurred on line: $($_.InvocationInfo.ScriptLineNumber)"
-            Write-Host "Error message: $($_.Exception.Message)"
+            Write-Host "An error occurred loading $ipf" -ForegroundColor Red
+            Write-Host "  Line: $($_.InvocationInfo.ScriptLineNumber)" -ForegroundColor Red
+            Write-Host "  Error: $($_.Exception.Message)" -ForegroundColor Red
         }
     }
     else {
-        Write-Host "$ipf Not Found"
+        Write-Host "$ipf Not Found" -ForegroundColor Yellow
     }
 }

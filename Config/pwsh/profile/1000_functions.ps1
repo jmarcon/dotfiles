@@ -2,8 +2,44 @@ if ($ENV:PROFILE_DEBUG -eq $true) {
     Write-Host 'Loading Functions'
 }
 
-function reload {
-    . $PROFILE
+function global:reload {
+    # Reload the main profile which contains the module loading logic
+    Write-Host "Reloading profile..." -ForegroundColor Cyan
+
+    # Enable debug mode for reload
+    $oldDebug = $ENV:PROFILE_DEBUG
+    $ENV:PROFILE_DEBUG = $true
+
+    # Clear all user-defined functions (except critical ones)
+    $criticalFunctions = @('prompt', 'TabExpansion2', 'Clear-Host', 'help', 'man', 'cd..', 'cd\', 'reload')
+    $clearedCount = 0
+    Get-ChildItem Function:\global:* | Where-Object {
+        $_.Name -notin $criticalFunctions
+    } | ForEach-Object {
+        Remove-Item $_.PSPath -ErrorAction SilentlyContinue
+        $clearedCount++
+    }
+
+    Write-Host "Cleared $clearedCount existing functions" -ForegroundColor Yellow
+
+    # Reload the main profile
+    if (Test-Path $PROFILE) {
+        Write-Host "Loading profile from: $PROFILE" -ForegroundColor Yellow
+        try {
+            # Use Invoke-Expression to execute the dot-source command
+            # This runs in the current scope, so functions will be global
+            Invoke-Expression ". '$PROFILE'"
+            Write-Host "Profile reloaded successfully!" -ForegroundColor Green
+        } catch {
+            Write-Host "Error loading profile: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "Line: $($_.InvocationInfo.ScriptLineNumber)" -ForegroundColor Red
+        }
+    } else {
+        Write-Host "Profile not found at: $PROFILE" -ForegroundColor Red
+    }
+
+    # Restore debug mode
+    $ENV:PROFILE_DEBUG = $oldDebug
 }
 
 ## OS Functions
@@ -348,4 +384,8 @@ function server {
     # start the server
     Write-Color "Starting server on port ", $Port -Color Yellow, Red
     python -m http.server $Port
+}
+
+function balatro {
+    set LUA_CPATH="E:\Steam\steamapps\common\Balatro\luasteam.dll" ; E:\Steam\steamapps\common\Balatro\Balatro.exe
 }

@@ -12,12 +12,13 @@ function update-dotnet {
         Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $dotnetInstaller
     }
 
-    Write-Title "Updading Dotnet Versions"
+    Write-Title "Updating Dotnet Versions SDKS : 6.0, 7.0, 8.0, 9.0, 10.0"
 
     & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 6.0
     & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 7.0
     & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 8.0
     & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 9.0
+    & $dotnetInstaller -InstallDir $DOTNET_ROOT -Channel 10.0
 }
 
 
@@ -194,11 +195,63 @@ function update-vscode {
 function update {
     Param(
         [Parameter(Mandatory = $false, ValueFromRemainingArguments = $true)]
-        [ValidateSet("all", "scoop", "choco", "npm", "dotnet", "python", "winget", "windows", "code")]
         [string[]]$tool = $("all")
     )
 
-    $tool = $tool.ToLower()
+    # Convert all arguments to lowercase for easier comparison
+    $tool = $tool | ForEach-Object { $_.ToLower() }
+    $parallel = ($tool -contains "--parallel" -or $tool -contains "-p")
+    if ($parallel) {
+        $tool = $tool | Where-Object { $_ -ne "--parallel" -and $_ -ne "-p" }
+    }
+
+    $help = ($tool -contains "--help" -or $tool -contains "-h" -or $tool -contains "-?" -or $tool -contains "/?")
+    if ($help) {
+        $tool = $tool | Where-Object { $_ -ne "--help" -and $_ -ne "-h" -and $_ -ne "-?" -and $_ -ne "/?" }
+    }
+    
+
+    # Check for help flag
+    if ($help) {
+        Write-Host ""
+        Write-Host "UPDATE FUNCTION" -ForegroundColor Green
+        Write-Host "===============" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "DESCRIPTION:" -ForegroundColor Cyan
+        Write-Host "  Updates various development tools and package managers."
+        Write-Host ""
+        Write-Host "USAGE:" -ForegroundColor Cyan
+        Write-Host "  update [--parallel] [tool1] [tool2] ... [--help]"
+        Write-Host ""
+        Write-Host "OPTIONS:" -ForegroundColor Cyan
+        Write-Host "  --parallel   Run updates in parallel (faster, but less readable output) (-p)"
+        Write-Host "  --help       Display this help message (-h, -?, /?)"
+        Write-Host ""
+        Write-Host "TOOLS:" -ForegroundColor Cyan
+        Write-Host "  all          Update all available tools (default)"
+        Write-Host "  scoop        Update Scoop packages"
+        Write-Host "  choco        Update Chocolatey packages (requires admin)"
+        Write-Host "  npm          Update NPM package manager"
+        Write-Host "  dotnet       Update .NET SDKs and global tools"
+        Write-Host "  python       Update Python pip and all installed modules"
+        Write-Host "  winget       Update packages via Windows Package Manager"
+        Write-Host "  windows      Update Windows (requires admin)"
+        Write-Host "  code         Force update Visual Studio Code"
+        Write-Host ""
+        Write-Host "EXAMPLES:" -ForegroundColor Cyan
+        Write-Host "  update                    # Update all tools sequentially"
+        Write-Host "  update --help             # Display this help message"
+        Write-Host "  update --parallel         # Update all tools in parallel"
+        Write-Host "  update scoop npm          # Update only Scoop and NPM"
+        Write-Host "  update --parallel scoop   # Update Scoop in parallel mode"
+        Write-Host ""
+        return
+    }
+
+    # If no tools specified after removing flags, default to "all"
+    if ($tool.Count -eq 0) {
+        $tool = @("all")
+    }
 
     # Executa winfetch primeiro se for "all"
     if ($tool -eq "all") {
@@ -285,50 +338,77 @@ function update {
         }
     }
     if ($tasksToRun.Count -gt 0) {
-        Write-Host "Starting $($tasksToRun.Count) task(s) in parallel..." -ForegroundColor Green
+        if ($parallel) {
+            Write-Host "Starting $($tasksToRun.Count) task(s) in parallel..." -ForegroundColor Green
 
-        foreach ($task in $tasksToRun) {
-            $job = Start-Job -Name $task.Name -ScriptBlock $task.ScriptBlock -ArgumentList $profilePath
-            $jobs += $job
-            Write-Host "♾️   Updating $($task.Name)" -ForegroundColor Cyan
+            foreach ($task in $tasksToRun) {
+                $job = Start-Job -Name $task.Name -ScriptBlock $task.ScriptBlock -ArgumentList $profilePath
+                $jobs += $job
+                Write-Host "♾️   Updating $($task.Name)" -ForegroundColor Cyan
+            }
+
+            Write-Host "`nMonitoring jobs..." -ForegroundColor Yellow
+
+            do {
+                $runningJobs = $jobs | Where-Object { $_.State -eq "Running" }
+                $completedJobs = $jobs | Where-Object { $_.State -eq "Completed" }
+                $failedJobs = $jobs | Where-Object { $_.State -eq "Failed" }
+
+                Write-Host "`r[Running: $($runningJobs.Count) | Completed: $($completedJobs.Count) | Failed: $($failedJobs.Count)]" -NoNewline -ForegroundColor White
+                Start-Sleep -Seconds 1
+
+            } while ($runningJobs.Count -gt 0)
+
+            Write-Host "`n`nAll tasks have completed!" -ForegroundColor Green
+
+            foreach ($job in $jobs) {
+                Write-Host "`n--- Result: $($job.Name) ---" -ForegroundColor Magenta
+
+                if ($job.State -eq "Completed") {
+                    Write-Host "✓ Success" -ForegroundColor Green
+                    $result = Receive-Job -Job $job
+                    if ($result) {
+                        $result | Write-Host
+                    }
+                }
+                elseif ($job.State -eq "Failed") {
+                    Write-Host "✗ Failed" -ForegroundColor Red
+                    $error = Receive-Job -Job $job 2>&1
+                    if ($error) {
+                        $error | Write-Host -ForegroundColor Red
+                    }
+                }
+
+                Remove-Job -Job $job
+            }
+
+            Write-Host "`nAll updates completed!" -ForegroundColor Green
         }
+        else {
+            Write-Host "Starting $($tasksToRun.Count) task(s) sequentially..." -ForegroundColor Green
 
-        Write-Host "`nMonitoring jobs..." -ForegroundColor Yellow
-        
-        do {
-            $runningJobs = $jobs | Where-Object { $_.State -eq "Running" }
-            $completedJobs = $jobs | Where-Object { $_.State -eq "Completed" }
-            $failedJobs = $jobs | Where-Object { $_.State -eq "Failed" }
-            
-            Write-Host "`r[Running: $($runningJobs.Count) | Completed: $($completedJobs.Count) | Failed: $($failedJobs.Count)]" -NoNewline -ForegroundColor White
-            Start-Sleep -Seconds 1
-            
-        } while ($runningJobs.Count -gt 0)
+            $completedCount = 0
+            $failedCount = 0
 
-        Write-Host "`n`nAll tasks have completed!" -ForegroundColor Green
+            foreach ($task in $tasksToRun) {
+                Write-Host "`n♾️   Updating $($task.Name)..." -ForegroundColor Cyan
 
-        foreach ($job in $jobs) {
-            Write-Host "`n--- Result: $($job.Name) ---" -ForegroundColor Magenta
-            
-            if ($job.State -eq "Completed") {
-                Write-Host "✓ Success" -ForegroundColor Green
-                $result = Receive-Job -Job $job
-                if ($result) {
-                    $result | Write-Host
+                try {
+                    & $task.ScriptBlock $profilePath
+                    Write-Host "✓ $($task.Name) completed successfully" -ForegroundColor Green
+                    $completedCount++
+                }
+                catch {
+                    Write-Host "✗ Error running $($task.Name): $($_.Exception.Message)" -ForegroundColor Red
+                    $failedCount++
                 }
             }
-            elseif ($job.State -eq "Failed") {
-                Write-Host "✗ Failed" -ForegroundColor Red
-                $error = Receive-Job -Job $job 2>&1
-                if ($error) {
-                    $error | Write-Host -ForegroundColor Red
-                }
-            }
-            
-            Remove-Job -Job $job
-        }
 
-        Write-Host "`nAll updates completed!" -ForegroundColor Green
+            Write-Host "`n--- Summary ---" -ForegroundColor Magenta
+            Write-Host "Completed: $completedCount" -ForegroundColor Green
+            Write-Host "Failed: $failedCount" -ForegroundColor Red
+            Write-Host "`nAll updates completed!" -ForegroundColor Green
+        }
     }
 
     if ($tool -contains "all" -or $tool -contains "winget") {
