@@ -56,7 +56,7 @@ scoop bucket add nerd-fonts
 | Package     | Description                                               | Must Have |
 | ----------- | --------------------------------------------------------- | --------- |
 | 7zip        | File compression tool                                     | yes       |
-| aws         | AWS Cli                                                   | nop       |
+| aws         | AWS Cli                                                   | no        |
 | base64      | Base64 encoder/decoder                                    | yes       |
 | bat         | Cat substitute with superpowers                           | yes       |
 | bombardier  | Http load test tool                                       | no        |
@@ -157,6 +157,8 @@ It will load the files in the following order:
 1. 2000_startup.ps1
 1. 3000_ohmyposh.ps1
 1. 4000_psreadline_profile.ps1
+1. 5000_tools.ps1
+1. 6000_ai.ps1
 
 ### 0000_env.ps1 : The Environment Variables
 
@@ -257,3 +259,14 @@ Configure oh-my-posh to have a fancy prompt in PowerShell.
 The PSReadline module is a PowerShell module that provides command-line editing and history capabilities.
 
 This file is responsible for configuring the PSReadline module and more...
+
+### 5000_tools.ps1
+
+Contains tools and utilities to enhance the PowerShell experience for:
+
+* `dotnet` : Tools that helps with outdated .NET project dependencies
+* `docker` : Functions that uses docker as base to run (like `hadolint`)
+
+### 6000_ai.ps1
+
+Functions that helps calling AI CLIs (uses npx to invoke them). `claude`, `gemini`

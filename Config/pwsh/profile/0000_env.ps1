@@ -40,3 +40,9 @@ $ENV:DOTNET_ROOT = Join-Path -Path $Env:USERPROFILE -ChildPath "apps\dotnet"
 $DOTNET_ROOT = Join-Path -Path $Env:USERPROFILE -ChildPath "apps\dotnet"
 $ENV:NVM_HOME = Join-Path -Path $Env:USERPROFILE -ChildPath "scoop\apps\nvm\current"
 $ENV:NVM_SYMLINK = Join-Path -Path $Env:USERPROFILE -ChildPath "scoop\persist\nvm\nodejs\nodejs"
+
+
+# If direnv is installed, set up its hook for PowerShell
+if (Get-Command "direnv" -ErrorAction SilentlyContinue) {
+    Invoke-Expression "$(direnv hook pwsh)"
+}
