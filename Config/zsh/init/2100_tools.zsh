@@ -17,3 +17,8 @@ if verify_commands thefuck; then
   eval $(thefuck --alias) || print_debug "Failed to initialize thefuck" "red"
   eval $(thefuck --alias fk) || print_debug "Failed to initialize thefuck" "red"
 fi
+
+# atuin
+if verify_commands atuin; then
+  eval "$(atuin init zsh)" || print_debug "Failed to initialize atuin" "red"
+fi

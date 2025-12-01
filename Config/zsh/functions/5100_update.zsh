@@ -18,7 +18,7 @@ function print_versions() {
     verify_commands python && echo "Python..: $(python --version)"
     verify_commands pyenv  && echo "Pyenv...: $(pyenv --version)"
     verify_commands go     && echo "Go......: $(go version)"
-    
+
     print_dotnet_versions
 }
 
@@ -59,6 +59,14 @@ function update_node() {
         npm install -g npm
         npm update -g
     fi
+
+    if verify_commands yarn; then
+        echo "--------------------------------"
+        echo ""
+        print_color "Updating Yarn" "yellow"
+        yarn global upgrade
+    fi
+
 }
 
 function update_macos() {
@@ -78,7 +86,7 @@ function update_macos_apps() {
         # Get mas outdated and put into a list of apps
         local mas_outdated
         mas_outdated=$(mas outdated | awk '{print $1}')
-        
+
         # Convert mas_outdated to an array
         mas_outdated=(${=mas_outdated})
 
@@ -171,13 +179,13 @@ function remove_dotnet_older_versions() {
     if verify_commands dotnet; then
         echo "--------------------------------"
         print_color "🧹 Cleaning up older .NET SDK versions..." "yellow"
-        
+
         # Get all installed SDKs and group by major version
         local sdks=($(dotnet --list-sdks | awk '{print $1}'))
-        
+
         # Create associative array to track versions by major version
         declare -A major_versions
-        
+
         # Group SDKs by major version
         for sdk in "${sdks[@]}"; do
             local major=$(echo $sdk | cut -d. -f1)
@@ -187,15 +195,15 @@ function remove_dotnet_older_versions() {
                 major_versions[$major]="$sdk"
             fi
         done
-        
+
         # For each major version, keep only the newest
         for major in "${(@k)major_versions}"; do
             local versions_array=(${=major_versions[$major]})
-            
+
             # Sort versions and get all but the last (newest)
             local sorted_versions=($(printf '%s\n' "${versions_array[@]}" | sort -V))
             local versions_to_remove=(${sorted_versions[@]:0:$((${#sorted_versions[@]}-1))})
-            
+
             # Remove older versions
             for version in "${versions_to_remove[@]}"; do
                 print_color "  Removing .NET SDK $version" "orange"
@@ -204,22 +212,23 @@ function remove_dotnet_older_versions() {
 					rm -rf "$DOTNET_ROOT/host/fxr/$version"
 					rm -rf "$DOTNET_ROOT/shared/Microsoft.NETCore.App/$version"
 					rm -rf "$DOTNET_ROOT/shared/Microsoft.AspNetCore.App/$version"
+					rm -rf "$DOTNET_ROOT/$version*" # Remove related certificates
                 fi
             done
-            
+
             # Show what we're keeping
             if [[ ${#versions_to_remove[@]} -gt 0 ]]; then
                 print_color "  Keeping .NET SDK ${sorted_versions[-1]} (latest for v$major)" "green"
             fi
         done
-        
+
         print_color "✅ .NET SDK cleanup completed" "green"
     fi
 }
 
 function update_dotnet_versions() {
     if verify_commands dotnet; then
-        # if the file /Users/jm/Downloads/dotnet-install.sh does not exists, 
+        # if the file /Users/jm/Downloads/dotnet-install.sh does not exists,
         # then return the function
         if [ ! -f /Users/jm/Downloads/dotnet-install.sh ]; then
             return
@@ -251,7 +260,7 @@ function update_dotnet_versions() {
 function update() {
     # Parse command line arguments
     local filters=("$@")
-    
+
     # Show help if requested
     if [[ "$1" == "help" ]]; then
         echo "Usage: update [filters...]"
@@ -299,13 +308,13 @@ function update() {
     local os_type="$CURRENT_OS"
     if [[ -z "$os_type" ]]; then
     case "$(uname -s)" in
-        Darwin*) 
-            os_type="mac" 
+        Darwin*)
+            os_type="mac"
             ;;
-        Linux*) 
-            os_type="linux" 
+        Linux*)
+            os_type="linux"
             ;;
-        *) 
+        *)
             os_type="unknown"
             ;;
     esac
@@ -327,7 +336,7 @@ function update() {
 		local os_type="$1"
 		shift
 		local filters=("$@")
-		
+
 		# Helper function to check if a filter is requested
 		function should_update() {
 			local component="$1"
@@ -371,7 +380,7 @@ function update() {
 			;;
 		esac
 	}
-    
+
     if should_update "homebrew"; then
         update_homebrew
     fi
@@ -387,7 +396,7 @@ function update() {
     if should_update "dotnet"; then
         update_dotnet_versions
     fi
-	
+
 	update_os_specific "$os_type"
 
 
