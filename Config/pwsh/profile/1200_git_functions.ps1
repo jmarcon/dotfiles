@@ -1,8 +1,6 @@
 if (!(Get-Command "git" -ErrorAction SilentlyContinue)) { exit }
 
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading Git Functions'
-}
+DEBUG_WRITE 'Loading Git Functions'
 
 
 function gs { git status }

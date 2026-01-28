@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading AI Functions'
-}
+DEBUG_WRITE 'Loading AI Functions'
 
 if(Get-Command "npx" -ErrorAction SilentlyContinue) {
     # If the command exists, create a new alias

@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Setting PSReadLine Profile'
-}
+DEBUG_WRITE 'Setting PSReadLine Profile'
 
 if ($env:TERM -eq "dumb" -or [Environment]::GetCommandLineArgs() -contains "-NonInteractive" -or $Host.Name -eq "ConsoleHost") {
     # Não carrega recursos que dependem de terminal interativo

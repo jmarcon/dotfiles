@@ -1,6 +1,4 @@
-if ($env:PROFILE_DEBUG -eq $true) {
-    Write-Host "Loading Modules"
-}
+DEBUG_WRITE "Loading Modules"
 
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path("$ChocolateyProfile")) {
@@ -10,7 +8,7 @@ if (Test-Path("$ChocolateyProfile")) {
 $modules_to_load = @(
     "scoop-completion"
     "PSReadLine"
-    "PSFzf"
+    # "PSFzf"
     "PSProfiler"
     "PSColors"
     "posh-git"
@@ -26,6 +24,7 @@ if ($env:TERM -eq "dumb" -or [Environment]::GetCommandLineArgs() -contains "-Non
 }
 
 foreach ($module in $modules_to_load) {
+    DEBUG_WRITE "Loading Module: $module"
     Try {
         if ($ENV:OSTYPE -and $ENV:OSTYPE.Contains("darwin") -eq $true) {
             if ($module.Contains("PSProfiler") -eq $true) { continue }

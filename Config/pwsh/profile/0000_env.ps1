@@ -1,7 +1,5 @@
 # Check if debug mode is enabled and log the loading of environment variables
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading Env Variables'
-}
+DEBUG_WRITE 'Loading Env Variables' 
 
 # Ensure USERPROFILE is set, defaulting to HOME if not
 if (-not $Env:USERPROFILE) {

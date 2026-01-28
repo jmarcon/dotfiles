@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading Tools'
-}
+DEBUG_WRITE 'Loading Tools'
 
 if(Get-Command "dotnet" -ErrorAction SilentlyContinue) {
     function Dotnet-Update-Csproj-Dependencies {

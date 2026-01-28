@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Setting Aliases'
-}
+DEBUG_WRITE 'Setting Aliases'
 
 if (Get-Command "btop" -ErrorAction SilentlyContinue) {
     Set-Alias top btop

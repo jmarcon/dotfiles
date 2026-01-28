@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Starting Up'
-}
+DEBUG_WRITE 'Starting Up'
 
 if (AmIAdmin) {
     $txt = " "
