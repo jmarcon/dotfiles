@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading Functions'
-}
+DEBUG_WRITE 'Loading Functions'
 
 function global:reload {
     # Reload the main profile which contains the module loading logic
@@ -388,4 +386,66 @@ function server {
 
 function balatro {
     set LUA_CPATH="E:\Steam\steamapps\common\Balatro\luasteam.dll" ; E:\Steam\steamapps\common\Balatro\Balatro.exe
+}
+
+###############################################################################
+# UTILITY FUNCTIONS - Ported from ZSH for cross-platform consistency
+###############################################################################
+
+# Print debug messages only when PROFILE_DEBUG or DEBUG_DOTFILES is set to true
+# Usage: print_debug "Debug message" "color_name"
+function print_debug {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string]$Message,
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string]$Color = 'White'
+    )
+
+    if ($ENV:PROFILE_DEBUG -eq $true -or $ENV:DEBUG_DOTFILES -eq "true") {
+        Write-Color $Message -Color $Color
+    }
+}
+
+# Verify that commands/executables are available
+# Usage: verify_commands "git" "node" "npm"
+# Returns $true if all commands exist, $false otherwise
+function verify_commands {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)]
+        [string[]]$CommandNames
+    )
+
+    foreach ($commandName in $CommandNames) {
+        $cmd = Get-Command $commandName -ErrorAction SilentlyContinue
+        if (-not $cmd) {
+            print_debug "      $commandName not installed" 'Red'
+            return $false
+        }
+    }
+    return $true
+}
+
+# Fetch gitignore templates from gitignore.io
+# Usage: gi python,node,go
+function gi {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string]$Templates
+    )
+
+    $url = "https://www.gitignore.io/api/$Templates"
+    Invoke-RestMethod -Uri $url
+}
+
+# Display sorted PATH entries with line numbers
+# Usage: print_path_sorted
+function print_path_sorted {
+    $ENV:PATH -split ';' | Sort-Object | ForEach-Object -Begin { $i = 1 } -Process {
+        Write-Output ("{0,5}`t{1}" -f $i, $_)
+        $i++
+    }
 }
