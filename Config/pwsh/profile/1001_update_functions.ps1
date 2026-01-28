@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading Update Functions'
-}
+DEBUG_WRITE 'Loading Update Functions'
 
 function update-dotnet {
     # Verify if the dotnet-install.ps1 script is in the downloads folder
@@ -143,7 +141,15 @@ function update-scoop {
     }
     
     try {
-        & scoop update --all
+        scoop status | ForEach-Object {
+            Write-Host "Updating $($_.Name)"
+            try {
+                & scoop update $_.Name --force
+            }
+            catch {
+                DEBUG_WRITE "$($_.Name) failed to update : $($_.Exception.Message)"
+            }
+        }
     }
     catch {
         Write-Host " "
@@ -420,6 +426,262 @@ function update {
     }
 
     if ($tool -contains "code") {
-        update-vscode 
+        update-vscode
     }
+}
+
+###############################################################################
+# UPDATE FUNCTIONS - Ported from ZSH for cross-platform consistency
+###############################################################################
+
+# Print installed .NET SDK versions
+# Usage: print_dotnet_versions
+function print_dotnet_versions {
+    if (verify_commands "dotnet") {
+        dotnet --list-sdks | ForEach-Object {
+            $version = ($_ -split '\s+')[0]
+            Write-Output ".NET SDK: $version"
+        }
+    }
+}
+
+# Print versions of all installed development tools
+# Usage: print_versions
+function print_versions {
+    Write-Color "Current versions:" -Color Cyan
+    Write-Output "--------------------------------"
+
+    if (verify_commands "node")   { Write-Output "Node....: $(node -v)" }
+    if (verify_commands "yarn")   { Write-Output "Yarn....: $(yarn -v)" }
+    if (verify_commands "bun")    { Write-Output "Bun.....: $(bun -v)" }
+    if (verify_commands "npm")    { Write-Output "NPM.....: $(npm -v)" }
+    if (verify_commands "python") { Write-Output "Python..: $(python --version)" }
+    if (verify_commands "pyenv")  { Write-Output "Pyenv...: $(pyenv --version)" }
+    if (verify_commands "go")     { Write-Output "Go......: $(go version)" }
+
+    print_dotnet_versions
+}
+
+# Update Python via pyenv to latest stable version
+# Usage: update_python_pyenv
+function update_python_pyenv {
+    if (-not (verify_commands "pyenv")) {
+        return
+    }
+
+    # Get the latest version (excluding dev/alpha/beta/rc versions)
+    $latestVersion = (pyenv install --list |
+        Where-Object {
+            $_ -notmatch 'dev|alpha|beta|rc|[a-z]' -and
+            $_ -match '^\s*\d+\.\d+\.\d+\s*$'
+        } |
+        Select-Object -Last 1).Trim()
+
+    # Get latest installed version
+    $installedVersion = (pyenv versions --bare | Select-Object -Last 1).Trim()
+
+    if ($installedVersion -ne $latestVersion) {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Color "Installing Python $latestVersion" -Color Yellow
+        pyenv install $latestVersion
+        pyenv global $latestVersion
+    }
+}
+
+# Update Node.js via nvm and update NPM
+# Usage: update_node
+function update_node {
+    if (verify_commands "nvm") {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Color "Updating Node.js" -Color Yellow
+        nvm install node
+        nvm use node
+        nvm alias default node
+    }
+
+    if (verify_commands "npm") {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Color "Updating NPM" -Color Yellow
+        npm install -g npm
+        npm update -g
+    }
+}
+
+# Update macOS system
+# Usage: update_macos
+function update_macos {
+    if (verify_commands "softwareupdate") {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Color "📦 Updating macOS..." -Color Yellow
+        softwareupdate --install --all --agree-to-license
+    }
+}
+
+# Update Mac App Store applications
+# Usage: update_macos_apps
+function update_macos_apps {
+    if (-not (verify_commands "mas")) {
+        return
+    }
+
+    Write-Output "--------------------------------"
+    Write-Output ""
+
+    # Get outdated apps
+    $masOutdated = mas outdated | ForEach-Object { ($_ -split '\s+')[0] }
+
+    if ($masOutdated.Count -gt 0) {
+        Write-Color "🛍️ Checking for Mac App Store updates..." -Color Yellow
+
+        foreach ($app in $masOutdated) {
+            # Skip Xcode (ID: 640199958)
+            if ($app -eq "640199958") {
+                Write-Color "Skipping Xcode update - it needs to be manually updated or in another account" -Color DarkYellow
+                continue
+            }
+
+            # Try to update each app
+            try {
+                mas upgrade $app
+            }
+            catch {
+                Write-Output "⚠️ Failed to update app with ID $app. It may not be installed."
+            }
+        }
+    }
+    else {
+        Write-Color "✅ No Mac App Store updates available." -Color Green
+    }
+}
+
+# Update Linux APT packages
+# Usage: update_linux_apt
+function update_linux_apt {
+    Write-Color "🐧 Updating Linux packages..." -Color Yellow
+
+    if (verify_commands "apt") {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Output "📦 Updating APT packages..."
+        sudo apt update
+        sudo apt upgrade -y
+    }
+}
+
+# Check for Linux Snap updates
+# Usage: update_linux_snap
+function update_linux_snap {
+    if (verify_commands "snap") {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Color "🔄 Checking for Snap updates..." -Color Yellow
+        sudo snap refresh --list
+    }
+}
+
+# Update Linux Flatpak packages
+# Usage: update_linux_flatpak
+function update_linux_flatpak {
+    if (verify_commands "flatpak") {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Color "📦 Updating Flatpak packages..." -Color Yellow
+        flatpak update -y
+    }
+}
+
+# Update Homebrew packages
+# Usage: update_homebrew
+function update_homebrew {
+    if (verify_commands "brew") {
+        Write-Output "--------------------------------"
+        Write-Output ""
+        Write-Color "🍺 Updating Homebrew packages..." -Color Yellow
+        brew update
+        brew upgrade
+        brew upgrade --cask --greedy
+        brew cleanup
+    }
+
+    if (verify_commands "code") {
+        code tunnel restart
+    }
+}
+
+# Remove older versions of each major .NET SDK version (keep only latest)
+# Usage: remove_dotnet_older_versions
+function remove_dotnet_older_versions {
+    if (-not (verify_commands "dotnet")) {
+        return
+    }
+
+    Write-Output "--------------------------------"
+    Write-Color "🧹 Cleaning up older .NET SDK versions..." -Color Yellow
+
+    # Get all installed SDKs
+    $sdks = dotnet --list-sdks | ForEach-Object {
+        ($_ -split '\s+')[0]
+    }
+
+    # Group by major version
+    $majorVersions = @{}
+    foreach ($sdk in $sdks) {
+        $major = $sdk.Split('.')[0]
+        if (-not $majorVersions.ContainsKey($major)) {
+            $majorVersions[$major] = @()
+        }
+        $majorVersions[$major] += $sdk
+    }
+
+    # For each major version, keep only the newest
+    foreach ($major in $majorVersions.Keys) {
+        $versions = $majorVersions[$major] | Sort-Object { [version]$_ }
+        $toRemove = $versions[0..($versions.Count - 2)]
+
+        foreach ($version in $toRemove) {
+            Write-Color "  Removing .NET SDK $version" -Color DarkYellow
+            $sdkPath = Join-Path $ENV:DOTNET_ROOT "sdk\$version"
+            if (Test-Path $sdkPath) {
+                Remove-Item -Recurse -Force $sdkPath
+            }
+        }
+
+        if ($toRemove.Count -gt 0) {
+            Write-Color "  Keeping .NET SDK $($versions[-1]) (latest for v$major)" -Color Green
+        }
+    }
+
+    Write-Color "✅ .NET SDK cleanup completed" -Color Green
+}
+
+# Update .NET SDK versions (6.0, 7.0, 8.0, 9.0)
+# Usage: update_dotnet_versions
+function update_dotnet_versions {
+    if (-not (verify_commands "dotnet")) {
+        return
+    }
+
+    # Check if dotnet-install script exists
+    $downloadsFolder = Join-Path $ENV:USERPROFILE "Downloads"
+    $dotnetInstaller = Join-Path $downloadsFolder "dotnet-install.ps1"
+
+    if (-not (Test-Path $dotnetInstaller)) {
+        Write-Color "Downloading dotnet-install.ps1..." -Color Yellow
+        Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $dotnetInstaller
+    }
+
+    Write-Output "--------------------------------"
+    Write-Output ""
+    Write-Color "🟣️ Updating Dotnet SDKs..." -Color Yellow
+
+    & $dotnetInstaller -Channel 9.0 -InstallDir $ENV:DOTNET_ROOT
+    & $dotnetInstaller -Channel 8.0 -InstallDir $ENV:DOTNET_ROOT
+    & $dotnetInstaller -Channel 7.0 -InstallDir $ENV:DOTNET_ROOT
+    & $dotnetInstaller -Channel 6.0 -InstallDir $ENV:DOTNET_ROOT
+
+    remove_dotnet_older_versions
 }
