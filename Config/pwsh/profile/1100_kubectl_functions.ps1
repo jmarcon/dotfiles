@@ -1,15 +1,42 @@
 if (!(Get-Command "kubectl" -ErrorAction SilentlyContinue)) { exit }
 
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Loading Kubectl Functions'
-}
+DEBUG_WRITE 'Loading Kubectl Functions'
 
 function k {
-    kubectl $args 
+    # if the environment variable ContextName is set, use it as the context
+    if ($ENV:ContextName) {
+        kubectl $args --context $ENV:ContextName
+        return
+    }
+    kubectl $args
 }
 
-function kgp { kubectl get pods -A $args }
-function kgs { kubectl get svc -A $args }
+function kgp { 
+    # if the environment variable ContextName is set, use it as the context
+    if ($ENV:ContextName) {
+        kubectl get pods -A --context $ENV:ContextName $args 
+        return
+    }
+    kubectl get pods -A $args 
+}
+
+function kgs { 
+    # if the environment variable ContextName is set, use it as the context
+    if ($ENV:ContextName) {
+        kubectl get svc -A --context $ENV:ContextName $args 
+        return
+    }
+    kubectl get svc -A $args 
+}
+
+function k9 {
+    # if the environment variable ContextName is set, use it as the context
+    if ($ENV:ContextName) {
+        k9s --context $ENV:ContextName $args
+        return
+    }
+    k9s $args
+}
 
 function kns {
     Param(
@@ -18,6 +45,11 @@ function kns {
     )
 
     if ($namespace) {
+        if ($ENV:ContextName) {
+            kubectl config set-context $ENV:ContextName --namespace=$namespace
+            return
+        }
+
         kubectl config set-context --current --namespace=$namespace
     }
     else {
@@ -75,13 +107,31 @@ function k-kill {
 
 function k-kill-ns {
     # kubectl get namespace $namespace -o json ` | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" | kubectl replace --raw /api/v1/namespaces/stucked-namespace/finalize -f -
-    Start-Job -ScriptBlock { kubectl proxy }
-    kubectl get ns | rg 'Terminating' | ForEach-Object {
-        $terminating_ns = $_.Split(" ")[0]
-        Write-Host "Force terminating Namespace: $terminating_ns"
-        $result = kubectl get ns $terminating_ns -o json |jq '.spec = {"finalizers":[]}'
-        curl -k -H "Content-Type: application/json" -X PUT --data-binary "$result" 127.0.0.1:8001/api/v1/namespaces/$terminating_ns/finalize | Out-Null
+    if($ENV:ContextName) {
+        Start-Job -ScriptBlock { kubectl proxy --context $using:ENV:ContextName }
     }
+    else {
+        Start-Job -ScriptBlock { kubectl proxy }
+    }
+    Start-Sleep -Seconds 2
+
+    if($ENV:ContextName) {
+        kubectl get ns --context $ENV:ContextName | rg 'Terminating' | ForEach-Object {
+            $terminating_ns = $_.Split(" ")[0]
+            Write-Host "Force terminating Namespace: $terminating_ns"
+            $result = kubectl --context $ENV:ContextName get ns $terminating_ns -o json |jq '.spec = {"finalizers":[]}'
+            curl -k -H "Content-Type: application/json" -X PUT --data-binary "$result" 127.0.0.1:8001/api/v1/namespaces/$terminating_ns/finalize | Out-Null
+        }
+    }
+    else {
+        kubectl get ns | rg 'Terminating' | ForEach-Object {
+            $terminating_ns = $_.Split(" ")[0]
+            Write-Host "Force terminating Namespace: $terminating_ns"
+            $result = kubectl get ns $terminating_ns -o json |jq '.spec = {"finalizers":[]}'
+            curl -k -H "Content-Type: application/json" -X PUT --data-binary "$result" 127.0.0.1:8001/api/v1/namespaces/$terminating_ns/finalize | Out-Null
+        }
+    }
+
     Get-Process -Name "kubectl" | Stop-Process
 }
 
