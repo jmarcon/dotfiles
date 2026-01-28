@@ -2,6 +2,7 @@ if (!(Get-Command "oh-my-posh" -ErrorAction SilentlyContinue)) { exit }
 
 DEBUG_WRITE 'Setting Oh-My-Posh'
 $Global:DEFAULT_POSH_THEME="atomic"
+$Global:DEFAULT_POSH_THEME_PATH="$(scoop prefix oh-my-posh)\themes"
 
 function Set-PoshPrompt {
     Param(
@@ -10,14 +11,25 @@ function Set-PoshPrompt {
     )
 
     DEBUG_WRITE "Setting Oh-My-Posh theme to: $Theme"
+    if ($env:WARP_IS_LOCAL_SHELL_SESSION -eq "1") {
+        DEBUG_WRITE "Detected local shell session in Warp, using 'minimal' theme for performance"
+        $Theme = "minimal"
+    }
 
     # if not $env:POSH_THEMES_PATH is set, set it to default location
     if (-not $env:POSH_THEMES_PATH) {
-
-        $env:POSH_THEMES_PATH = "$(scoop prefix oh-my-posh)\themes"
+        $env:POSH_THEMES_PATH = $Global:DEFAULT_POSH_THEME_PATH
     }
 
-    oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/$Theme.omp.json | Invoke-Expression
+    if ((Test-Path "$env:POSH_THEMES_PATH/$Theme.omp.json")) {
+        oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/$Theme.omp.json | Invoke-Expression
+    }
+    elseif ((Test-Path "$env:POSH_THEMES_PATH/$Theme.omp.toml")) {
+        oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/$Theme.omp.toml | Invoke-Expression
+    }
+    elseif ((Test-Path "$env:POSH_THEMES_PATH/$Theme.omp.yaml")) {
+        oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/$Theme.omp.yaml | Invoke-Expression
+    }
 }
 
 function Set-PoshTheme {
@@ -38,10 +50,10 @@ function Set-PoshTheme {
         Set-PoshPrompt "easy-term"
     }
     else {
-        Set-PoshPrompt $DEFAULT_POSH_THEME
+        Set-PoshPrompt $Global:DEFAULT_POSH_THEME
     }
 }
 
-Set-PoshPrompt
+Set-PoshPrompt "radar"
 
 # oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/atomic.omp.json | Invoke-Expression
