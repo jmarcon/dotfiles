@@ -1,8 +1,6 @@
 if (!(Get-Command "gh" -ErrorAction SilentlyContinue)) { exit }
 
-if ($ENV:PROFILE_DEBUG -eq $true) {
-	Write-Host 'Loading GitHub Functions'
-}
+DEBUG_WRITE 'Loading GitHub Functions'
 
 function ghcs {
 	# Debug support provided by common PowerShell function parameters, which is natively aliased as -d or -db
