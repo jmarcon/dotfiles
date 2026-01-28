@@ -1,5 +1,7 @@
 # PowerShell Profile
 
+> **Note**: This profile is designed to be synchronized with the ZSH profile for cross-platform consistency. See [PROFILE_SYNC_REQUIREMENTS.md](../../../PROFILE_SYNC_REQUIREMENTS.md) for guidelines on maintaining function compatibility across both shells.
+
 ## Entrypoint
 
 The 0000__PROFILE.ps1 file is the entrypoint for the PowerShell profile. This file is loaded first and is responsible for loading all other profile files.
@@ -40,7 +42,7 @@ scoop install git
 scoop install pwsh
 ```
 
-You can find more information about Scoop in the [official documentation]()
+You can find more information about Scoop in the [official documentation](https://scoop.sh)
 
 #### Some useful Scoop packages
 
@@ -67,7 +69,7 @@ scoop bucket add nerd-fonts
 | curl        | Tool to transfer data from or to a url                    | yes       |
 | curlie      | Curl with a friendly interface                            | no        |
 | duf         | Disk usage tool with more features                        | yes       |
-| eza         | cd command substitute                                     | yes       |
+| eza         | ls command substitute with modern features                | yes       |
 | fd          | find command substittue                                   | yes       |
 | fzf         | Fuzzy finder for powershell                               | yes       |
 | gawk        | GNU Awk, a text processing tool                           | yes       |
@@ -145,15 +147,18 @@ This file is the entrypoint for the PowerShell profile. It loads all other profi
 It will load the files in the following order:
 
 1. 0000_env.ps1
-1. 0100_paths.ps1
+1. 0100_path.ps1
 1. 0200_modules.ps1
 1. 0500_aliases.ps1
 1. 0750_completions.ps1
 1. 1000_functions.ps1
+1. 1000_function_aliases.ps1
 1. 1001_update_functions.ps1
 1. 1100_kubectl_functions.ps1
 1. 1200_git_functions.ps1
 1. 1300_docker_functions.ps1
+1. 1400_environment_functions.ps1
+1. 1500_github_integration.ps1
 1. 2000_startup.ps1
 1. 3000_ohmyposh.ps1
 1. 4000_psreadline_profile.ps1
@@ -174,11 +179,11 @@ $ENV:MY_SECRET = "my_secret_value"
 $ENV:MY_DEVOPS_TOKEN = "my_devops_token"
 ```
 
-### 0100_paths.ps1 : The Paths
+### 0100_path.ps1 : The Paths
 
 It contains the paths that are added to the `$env:PATH` variable.
 
-### ### 0200_modules.ps1 : PowerShell Modules
+### 0200_modules.ps1 : PowerShell Modules
 
 Loads modules that are installed in the user's environment.
 
@@ -193,6 +198,12 @@ Contains completions for PowerShell commands.
 ### 1000_functions.ps1 : Where aliases are not enough
 
 Functions very useful for day-to-day tasks and shortcuts.
+
+### 1000_function_aliases.ps1 : Cross-Platform Function Wrappers
+
+Contains wrapper functions that provide consistent naming across PowerShell and ZSH profiles. This ensures that functions have the same `snake_case` names in both shells for cross-platform compatibility.
+
+For more information, see [PROFILE_SYNC_REQUIREMENTS.md](../../../PROFILE_SYNC_REQUIREMENTS.md).
 
 ### 1001_update_functions.ps1
 
@@ -244,6 +255,31 @@ Docker related shortcuts
 dps
 ```
 
+### 1400_environment_functions.ps1
+
+Environment and cloud platform helpers. Contains functions for:
+
+* **AWS**: Authentication, profile management, and context switching
+* **Kubernetes**: Context and namespace management
+* **Environment Validation**: Check and validate environment configurations
+
+> Some Examples:
+
+```powershell
+# Authenticate with AWS
+authenticate_aws
+
+# Validate environment configuration
+validate_environment "production"
+
+# Switch Kubernetes namespace
+kkns my-namespace
+```
+
+### 1500_github_integration.ps1
+
+GitHub CLI integration and helpers. Contains functions for working with GitHub repositories, issues, pull requests, and workflows using the `gh` command-line tool.
+
 ### 2000_startup.ps1
 
 After all the important profile files are loaded, the 2000_startup.ps1 file is loaded.
@@ -270,3 +306,13 @@ Contains tools and utilities to enhance the PowerShell experience for:
 ### 6000_ai.ps1
 
 Functions that helps calling AI CLIs (uses npx to invoke them). `claude`, `gemini`
+
+## See Also
+
+- **[Main Repository README](../../../README.md)** - Getting started guide and repository overview
+- **[PROFILE_SYNC_REQUIREMENTS.md](../../../PROFILE_SYNC_REQUIREMENTS.md)** - Cross-platform function synchronization guidelines
+- **[TODO.md](../../../TODO.md)** - Implementation status of synchronized functions
+
+---
+
+**Last Updated:** 2025-11-29
