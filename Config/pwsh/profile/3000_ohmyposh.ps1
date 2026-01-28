@@ -1,23 +1,32 @@
 if (!(Get-Command "oh-my-posh" -ErrorAction SilentlyContinue)) { exit }
 
-if ($ENV:PROFILE_DEBUG -eq $true) {
-    Write-Host 'Setting Oh-My-Posh'
-}
+DEBUG_WRITE 'Setting Oh-My-Posh'
+$Global:DEFAULT_POSH_THEME="atomic"
 
 function Set-PoshPrompt {
     Param(
-        [Parameter(Mandatory = $true)]
-        [string]$Theme = "atomic"
+        [Parameter(Mandatory = $false)]
+        [string]$Theme = $Global:DEFAULT_POSH_THEME
     )
+
+    DEBUG_WRITE "Setting Oh-My-Posh theme to: $Theme"
+
+    # if not $env:POSH_THEMES_PATH is set, set it to default location
+    if (-not $env:POSH_THEMES_PATH) {
+
+        $env:POSH_THEMES_PATH = "$(scoop prefix oh-my-posh)\themes"
+    }
 
     oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/$Theme.omp.json | Invoke-Expression
 }
 
 function Set-PoshTheme {
     Param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string]$themeReason = "dev"
     )
+
+    DEBUG_WRITE "Choosing Oh-My-Posh theme for reason: $themeReason"
 
     if ($themeReason -eq "dev") {
         Set-PoshPrompt "tokyonight_storm"
@@ -29,10 +38,10 @@ function Set-PoshTheme {
         Set-PoshPrompt "easy-term"
     }
     else {
-        Set-PoshPrompt "atomic"
+        Set-PoshPrompt $DEFAULT_POSH_THEME
     }
 }
 
-Set-PoshPrompt "atomic"
+Set-PoshPrompt
 
 # oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/atomic.omp.json | Invoke-Expression
