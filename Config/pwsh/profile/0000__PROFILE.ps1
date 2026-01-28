@@ -15,6 +15,15 @@ else {
     }
 }
 
+# Debug Function
+function DEBUG_WRITE {
+    param($Message)
+
+    if($ENV:PROFILE_DEBUG -eq $true) {
+        Write-Host $Message
+    }
+}
+
 # List of profile files to load
 $pfiles = @(
     '0000_env'
@@ -22,11 +31,13 @@ $pfiles = @(
     '0200_modules'
     '0500_aliases'
     '0750_completions'
+    '1000_function_aliases'
     '1000_functions'
     '1001_update_functions'
     '1100_kubectl_functions'
     '1200_git_functions'
     '1300_docker_functions'
+    '1400_environment_functions'
     '1500_github_integration'
     '2000_startup'
     '3000_ohmyposh'
