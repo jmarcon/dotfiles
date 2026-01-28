@@ -1,6 +1,4 @@
-if ($ENV:PROFILE_DEBUG -eq $true) { 
-    Write-Host 'Loading Path' 
-}
+DEBUG_WRITE 'Loading Path' 
 
 function Remove-Path {
     Param(
@@ -44,6 +42,46 @@ function Add-Path-UserProfile {
     }
     $ENV:PATH += $Env:USERPROFILE + $Path
 }
+
+# Remove empty, non-existent, and duplicate directories from PATH
+# Usage: clean_path
+function clean_path {
+    [CmdletBinding()]
+    param()
+
+    $newPath = @()
+    $pathDirs = $ENV:PATH -split ';'
+
+    foreach ($dir in $pathDirs) {
+        # Skip empty directories
+        if ([string]::IsNullOrWhiteSpace($dir)) {
+            if ($ENV:PROFILE_DEBUG -eq $true -or $ENV:DEBUG_DOTFILES -eq "true") {
+                Write-Host "Skipping empty directory in PATH" -ForegroundColor Yellow
+            }
+            continue
+        }
+
+        # Skip non-existent directories
+        if (-not (Test-Path -Path $dir -PathType Container)) {
+            if ($ENV:PROFILE_DEBUG -eq $true -or $ENV:DEBUG_DOTFILES -eq "true") {
+                Write-Host "Removing non-existent directory from PATH: $dir" -ForegroundColor Red
+            }
+            continue
+        }
+
+        # Skip duplicates
+        if ($newPath -contains $dir) {
+            if ($ENV:PROFILE_DEBUG -eq $true -or $ENV:DEBUG_DOTFILES -eq "true") {
+                Write-Host "Skipping duplicate directory in PATH: $dir" -ForegroundColor Yellow
+            }
+            continue
+        }
+
+        $newPath += $dir
+    }
+
+    $ENV:PATH = $newPath -join ';'
+}
 Add-Path-UserProfile "\scoop\apps\nvm\current"
 Add-Path-UserProfile "\scoop\apps\nvm\current\nodejs\nodejs"
 Add-Path-UserProfile "\scoop\apps\oh-my-posh\current"
@@ -70,3 +108,8 @@ if ($ENV:DOTNET_ROOT -ne $null -and $ENV:DOTNET_ROOT -ne '') {
     
     Add-Path $ENV:DOTNET_ROOT
 }
+
+$shimPath = "$env:USERPROFILE\AppData\Local\mise\shims"
+$currentPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+$newPath = $currentPath + ";" + $shimPath
+[Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
