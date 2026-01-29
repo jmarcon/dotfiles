@@ -1,3 +1,7 @@
+#!/bin/zsh
+print_debug '  ♾️️ Loading Functions [5200] - FZF' 'yellow'
+
+
 # If fzf is installed
 if verify_commands fzf; then
   print_debug '  ♾️️ Loading Functions [5200] - FZF' 'yellow'

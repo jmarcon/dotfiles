@@ -1,4 +1,6 @@
 #!/bin/zsh
+print_debug '  ♾️️ Loading Functions [5600] - Files and Folders' 'yellow'
+
 
 # Function to handle deletion with confirmation
 function remove_deps() {
