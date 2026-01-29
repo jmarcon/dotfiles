@@ -1,4 +1,4 @@
-"$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json"
+$schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
 final_space = false
 version = 4
 
@@ -44,7 +44,7 @@ background = "#40c4ff"
 foreground = "#000000"
 
 template = " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#ef5350> \uf046 {{ .Staging.String }}</>{{ end }} "
-background_templates = [ 
+background_templates = [
     "{{ if or (.Working.Changed) (.Staging.Changed) }}#ffeb95{{ end }}",
     "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#c5e478{{ end }}",
     "{{ if gt .Ahead 0 }}#C792EA{{ end }}",
@@ -55,8 +55,6 @@ background_templates = [
 branch_icon = " "
 fetch_status= true
 fetch_upstream_icon = true
-
-
 
 
 [[blocks]]
@@ -248,7 +246,7 @@ background = "#316ce4"
 foreground = "#ffffff"
 leading_diamond = "\ue0b6"
 style = "diamond"
-template = "\uf308 {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}"
+template = "\uf308 {{.Context}}{{if .Namespace}} - {{.Namespace}}{{end}}"
 trailing_diamond = "\ue0b4"
 type = "kubectl"
 
