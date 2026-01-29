@@ -13,11 +13,11 @@ Config/zsh/
 ├── .path.zsh               # Loader for path/*
 ├── .aliases.zsh            # Loader for aliases/*
 ├── .functions.zsh          # Loader for functions/*
-├── env/                    # 1000–1500 prefixed environment scripts
+├── env/                    # 1000–1999 prefixed environment scripts
 ├── init/                   # 2100–2999 prefixed initialization scripts
-├── path/                   # 3000–3300 prefixed PATH management
+├── path/                   # 3000–3999 prefixed PATH management
 ├── aliases/                # 4000–4999 prefixed aliases
-├── functions/              # 5000–5900 prefixed functions
+├── functions/              # 5000–5999 prefixed functions
 ├── automation/             # Automation helpers
 ├── .claude                 # Tool-specific config
 └── .qodo                   # Tool-specific config
