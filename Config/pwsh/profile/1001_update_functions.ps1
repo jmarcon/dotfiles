@@ -91,7 +91,7 @@ function update-winget {
 }
 
 if (Get-Command "scoop" -ErrorAction SilentlyContinue) {
-    function Refresh-Scoop-Buckets {
+    function Reset-ScoopBucket {
         Param(
             [Parameter(Mandatory = $true, Position = 0)]
             [string]$scoop_bucket
@@ -100,6 +100,8 @@ if (Get-Command "scoop" -ErrorAction SilentlyContinue) {
         scoop bucket rm $scoop_bucket
         scoop bucket add $scoop_bucket
     }
+
+    Set-Alias -Name "Refresh-Scoop-Buckets" -Value "Reset-ScoopBucket"
 }
 
 
