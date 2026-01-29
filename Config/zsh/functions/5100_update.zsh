@@ -174,6 +174,15 @@ function update_nvim_lazy() {
     fi
 }
 
+function update_mise() {
+    if verify_commands mise; then
+        echo "--------------------------------"
+        echo ""
+        print_color "🔧 Updating mise tools..." "yellow"
+        mise upgrade --yes
+    fi
+}
+
 function remove_dotnet_older_versions() {
     # It will remove older versions of each major version installed but the newest
     if verify_commands dotnet; then
@@ -276,6 +285,7 @@ function update() {
         echo "  node         - Update Node.js and NPM"
         echo "  nvim         - Update Neovim plugins"
         echo "  dotnet       - Update .NET SDKs"
+        echo "  mise         - Update mise tools"
         echo ""
         echo "Examples:"
         echo "  update                    # Update everything"
@@ -395,6 +405,9 @@ function update() {
     fi
     if should_update "dotnet"; then
         update_dotnet_versions
+    fi
+    if should_update "mise"; then
+        update_mise
     fi
 
 	update_os_specific "$os_type"
