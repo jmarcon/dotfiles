@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install ShellCheck
-        run: sudo apt-get install -y shellcheck
       - name: Run ShellCheck on ZSH files
         run: |
           find Config/zsh Install/linux -name "*.zsh" -type f | while read -r file; do
@@ -29,15 +27,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install PowerShell
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https software-properties-common
-          source /etc/os-release
-          wget -q "https://packages.microsoft.com/config/ubuntu/$VERSION_ID/packages-microsoft-prod.deb"
-          sudo dpkg -i packages-microsoft-prod.deb
-          rm packages-microsoft-prod.deb
-          sudo apt-get update
-          sudo apt-get install -y powershell
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Install PowerShell via dotnet
+        run: dotnet tool install --global PowerShell
       - name: Run PSScriptAnalyzer
         shell: pwsh
         run: |
@@ -64,6 +58,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install ZSH
+        run: sudo apt-get update && sudo apt-get install -y zsh
       - name: Check ZSH syntax
         run: |
           for file in $(find Config/zsh Install/linux -name "*.zsh" -type f); do
@@ -73,7 +69,6 @@ jobs:
       - name: Check YAML syntax
         run: |
           pip install yamllint
-          yamllint -d relaxed Config/posh/*.toml 2>/dev/null || true
           yamllint -d relaxed .github/workflows/*.yml
 
   cross-platform-functions:
@@ -86,12 +81,12 @@ jobs:
           echo "=== PowerShell Functions ==="
           grep -rhoE 'function [a-z_]+' Config/pwsh/profile/*.ps1 | sort -u | sed 's/function //' > /tmp/ps_functions.txt
           cat /tmp/ps_functions.txt
-          
+
           echo ""
           echo "=== ZSH Functions ==="
           grep -rhoE '^function [a-z_]+|^[a-z_]+\(\)' Config/zsh/**/*.zsh | sed 's/function //;s/()//' | sort -u > /tmp/zsh_functions.txt
           cat /tmp/zsh_functions.txt
-          
+
           echo ""
           echo "=== Function Parity Report ==="
           echo "PowerShell-only functions:"
@@ -105,16 +100,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Neovim
-        run: |
-          sudo add-apt-repository -y ppa:neovim-ppa/unstable
-          sudo apt-get update
-          sudo apt-get install -y neovim
+      - name: Install Lua
+        run: sudo apt-get update && sudo apt-get install -y lua5.4
       - name: Validate Lua syntax
         run: |
           find Config/nvim -name "*.lua" -type f | while read -r file; do
             echo "Checking: $file"
-            luac -p "$file" 2>&1 || echo "Warning: $file has Lua syntax issues"
+            luac5.4 -p "$file" || echo "Warning: $file has Lua syntax issues"
           done
 
   tmux-config:
@@ -123,7 +115,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Tmux
-        run: sudo apt-get install -y tmux
+        run: sudo apt-get update && sudo apt-get install -y tmux
       - name: Validate Tmux config
         run: |
           if [ -f Config/tmux/.tmux.conf ]; then
