@@ -40,3 +40,11 @@ function IsOsx() {
         return 0
     fi
 }
+
+function __cmd() {
+	if [ $# -gt 0 ]; then
+		echo "$*"
+	else
+		fc -ln -1 -1 | sed 's/^[[:space:]]*//'
+	fi
+}
