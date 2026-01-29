@@ -191,7 +191,7 @@ function update-vscode {
 
     Write-Title "Force Updating Visual Studio Code"
     Write-Host "Killing code instances and code-tunnel"
-    Get-Process -Name "code-*","Code*" | kill 
+    Get-Process -Name "code-*", "Code*" | kill 
     Write-Host "Updating vscode from Scoop"
     scoop update vscode
     Write-Host "Installing code tunnel again"
@@ -280,7 +280,7 @@ function update {
 
     if ($tool -contains "all" -or $tool -contains "scoop") {
         $tasksToRun += @{
-            Name = "Scoop"
+            Name        = "Scoop"
             ScriptBlock = { 
                 param($profilePath)
                 if (Test-Path $profilePath) { 
@@ -293,7 +293,7 @@ function update {
 
     if ($tool -contains "all" -or $tool -contains "choco") {
         $tasksToRun += @{
-            Name = "Chocolatey"
+            Name        = "Chocolatey"
             ScriptBlock = { 
                 param($profilePath)
                 if (Test-Path $profilePath) { 
@@ -306,7 +306,7 @@ function update {
 
     if ($tool -contains "all" -or $tool -contains "npm") {
         $tasksToRun += @{
-            Name = "NPM"
+            Name        = "NPM"
             ScriptBlock = { 
                 param($profilePath)
                 if (Test-Path $profilePath) { 
@@ -319,7 +319,7 @@ function update {
 
     if ($tool -contains "all" -or $tool -contains "dotnet") {
         $tasksToRun += @{
-            Name = "DotNet"
+            Name        = "DotNet"
             ScriptBlock = { 
                 param($profilePath)
                 if (Test-Path $profilePath) { 
@@ -333,7 +333,7 @@ function update {
 
     if ($tool -contains "all" -or $tool -contains "python") {
         $tasksToRun += @{
-            Name = "Python"
+            Name        = "Python"
             ScriptBlock = { 
                 param($profilePath)
                 if (Test-Path $profilePath) { 
@@ -379,9 +379,9 @@ function update {
                 }
                 elseif ($job.State -eq "Failed") {
                     Write-Host "✗ Failed" -ForegroundColor Red
-                    $error = Receive-Job -Job $job 2>&1
-                    if ($error) {
-                        $error | Write-Host -ForegroundColor Red
+                    $jobError = Receive-Job -Job $job 2>&1
+                    if ($jobError) {
+                        $jobError | Write-Host -ForegroundColor Red
                     }
                 }
 
@@ -451,13 +451,13 @@ function print_versions {
     Write-Color "Current versions:" -Color Cyan
     Write-Output "--------------------------------"
 
-    if (verify_commands "node")   { Write-Output "Node....: $(node -v)" }
-    if (verify_commands "yarn")   { Write-Output "Yarn....: $(yarn -v)" }
-    if (verify_commands "bun")    { Write-Output "Bun.....: $(bun -v)" }
-    if (verify_commands "npm")    { Write-Output "NPM.....: $(npm -v)" }
+    if (verify_commands "node") { Write-Output "Node....: $(node -v)" }
+    if (verify_commands "yarn") { Write-Output "Yarn....: $(yarn -v)" }
+    if (verify_commands "bun") { Write-Output "Bun.....: $(bun -v)" }
+    if (verify_commands "npm") { Write-Output "NPM.....: $(npm -v)" }
     if (verify_commands "python") { Write-Output "Python..: $(python --version)" }
-    if (verify_commands "pyenv")  { Write-Output "Pyenv...: $(pyenv --version)" }
-    if (verify_commands "go")     { Write-Output "Go......: $(go version)" }
+    if (verify_commands "pyenv") { Write-Output "Pyenv...: $(pyenv --version)" }
+    if (verify_commands "go") { Write-Output "Go......: $(go version)" }
 
     print_dotnet_versions
 }
