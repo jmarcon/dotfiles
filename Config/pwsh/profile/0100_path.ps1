@@ -113,3 +113,10 @@ $shimPath = "$env:USERPROFILE\AppData\Local\mise\shims"
 $currentPath = [Environment]::GetEnvironmentVariable('Path', 'User')
 $newPath = $currentPath + ";" + $shimPath
 [Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+
+# If mise command exists, initialize it
+if (Get-Command mise -ErrorAction SilentlyContinue) {
+    mise settings experimental=true
+    mise activate pwsh | Out-String | Invoke-Expression
+    mise activate pwsh --shims
+}
