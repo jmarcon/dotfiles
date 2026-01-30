@@ -2,12 +2,12 @@
 print_debug '=> 📁️ Setting Environment Variables [1000]' 'blue'
 
 ## Source the aliases
-dir=$(dirname $(realpath $0))
+dir=$(dirname "$(realpath $0)")
 
 ## Aliases
 ## Get All files in the env folder
 for zfile in "$dir/env/"*.zsh; do
-  source $zfile
+	source $zfile
 done
 
 ## Source a local file if it exists
@@ -15,7 +15,7 @@ done
 ### include sensitive information like passwords, api keys, etc
 ### consider adding it to your .gitignore
 if [ -f ~/.dotfiles/.env.local.zsh ]; then
-  if ! source ~/.dotfiles/.env.local.zsh; then
-    print_debug "Error sourcing local env, skipping..." 'red'
-  fi
+	if ! source ~/.dotfiles/.env.local.zsh; then
+		print_debug "Error sourcing local env, skipping..." 'red'
+	fi
 fi

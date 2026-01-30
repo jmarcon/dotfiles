@@ -22,7 +22,7 @@ zstyle :compinstall filename '$HOME/.zshrc'
 
 # Homebrew completions
 if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+	FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
 autoload -Uz compinit
 compinit
@@ -32,7 +32,6 @@ compinit
 [ -f ~/.dotfiles/.functions.zsh ] && source ~/.dotfiles/.functions.zsh
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
 
 # bun completions
 [ -s "/Users/jm/.bun/_bun" ] && source "/Users/jm/.bun/_bun"
